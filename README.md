@@ -10,19 +10,19 @@ _Last auto-check (Canada Computers): **2026-11-20 16:07 EST**._
 
 ## Table of Contents
 
-- [PLAY NOW — where you can actually play](#play-now--where-you-can-actually-play)
+- [PLAY NOW — where you can actually play (Downtown only)](#play-now--where-you-can-actually-play-downtown-toronto-only)
 - [CONSOLES FOR SALE — available items](#consoles-for-sale--available-items)
 - [Table 1 — VERIFIED](#table-1--verified)
 - [Table 2 — UNVERIFIED (site blocks bots)](#table-2--unverified-site-blocks-bots--manual-check-required)
 - [Notes](#notes)
 
-## PLAY NOW — where you can actually play
+## PLAY NOW — where you can actually play (Downtown Toronto only)
 
-Places to play consoles/PCs by the hour in Toronto. These **rent play time**; they do not sell hardware.
+Places to play consoles/PCs by the hour **in Downtown Toronto**. These **rent play time**; they do not sell hardware. GTA-area venues are out of scope for this section.
 
 | Venue | What | Pricing | Location |
 |---|---|---|---|
-| Invictus Game Station | PC gaming lounge | Hourly play / day pass, per person | Yonge Street, 2nd Floor, Toronto, ON M4Y 1Z1 — https://invictusgamestation.com/ |
+| Invictus Game Station | PC gaming lounge | Hourly play / day pass, per person | Yonge Street, 2nd Floor, Downtown Toronto, ON M4Y 1Z1 — https://invictusgamestation.com/ |
 
 > :warning: **CAUTION — manually found, may not be up to date.** Venue hours, pricing and
 > station availability change constantly and are not machine-checked. **Call ahead.**
