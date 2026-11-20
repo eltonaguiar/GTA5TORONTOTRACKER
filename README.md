@@ -8,6 +8,29 @@ In-stock check for **Xbox Series X / S** and **PlayStation 5** for **downtown To
 
 _Last auto-check (Canada Computers): **2026-11-20 16:07 EST**._
 
+## Table of Contents
+
+- [PLAY NOW — available items](#play-now--available-items)
+- [Table 1 — VERIFIED](#table-1--verified)
+- [Table 2 — UNVERIFIED (site blocks bots)](#table-2--unverified-site-blocks-bots--manual-check-required)
+- [Notes](#notes)
+
+## PLAY NOW — available items
+
+Everything currently buyable, grouped in one place. **Verified** rows were read by the tracker; **user-reported** rows were found by a person and may be stale.
+
+| Item | Price | Status | Where | Link |
+|---|---|---|---|---|
+| Xbox Series X 1TB | $1,299.50 | ✅ In stock | Amazon.ca — free delivery Nov 26–27 | https://www.amazon.ca/dp/B0BMXVWSD6 |
+| Xbox Series S 512GB | $649.96 | ✅ In stock | Amazon.ca — delivery Sat Dec 5 | https://www.amazon.ca/dp/B0FLL9VRL5 |
+| PS5 Digital Edition (Slim) | $1,099.99 | ✅ "Only 4 left" | Amazon.ca — delivery Nov 26–27 | https://www.amazon.ca/dp/B0CL7NKBBL |
+| PS5 Slim Disc Edition | — | ⚠️ User-reported | Best Buy — not machine-verified | https://www.bestbuy.ca/en-ca/product/playstation-5-disc-edition-console-slim/19609594 |
+| PS5 Pro 2TB SSD | — | ⚠️ User-reported, **open box** | Best Buy — returned unit; check grade + warranty | https://www.bestbuy.ca/en-ca/product/playstation-5-pro-console-with-2tb-ssd-ai-enhanced-4k-resolution-playstation-spectral-super-resolution-open-box/20351327 |
+
+> :warning: **CAUTION on the ⚠️ rows — manually found, may not be up to date.**
+> They were reported available online by a person, not verified by the tracker: Best Buy
+> returns HTTP 403 to automated checks. Stock changes hourly — **confirm on the page before buying.**
+
 ## Table 1 — VERIFIED
 
 | Console | Price | Status | Where / delivery to downtown (M5G) | Link | Last updated (EST) |
