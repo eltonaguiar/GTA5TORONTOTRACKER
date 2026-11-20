@@ -20,9 +20,27 @@ Tracking availability of PS5 and Xbox Series X|S in Downtown Toronto and the GTA
 |---|---|---|---|---|
 | Xbox Series S 512GB All-Digital (+ wireless controller) | CAD $649.96 | **Walmart — TORONTO STOCKYARDS** | Free pickup **today**, "Pickup today", sold and shipped by Walmart | 2026-11-20 21:53 UTC (16:53 EST) |
 
+> **This is the only first-party in-store console hit found.** Every other "Pickup today" console listing at Walmart came from a third-party marketplace seller — see the marketplace caution below before trusting any of those prices.
+
 Source: [`walmart.ca` product page](https://www.walmart.ca/en/ip/XBOX-Series-S-All-Digital-Gaming-Console-512GB-SSD-Includes-XBOX-Wireless-Controller-120FPS-Robot-White/7IY33NVWJOKP?selectedSellerId=0) — store name and pickup status read from the page itself, not typed by hand.
 
 **Caveat on location:** Stockyards (St Clair W) is Toronto but **not the downtown core** — roughly 7 km west. No downtown-core store has verified in-store stock for any console as of this update.
+
+### Marketplace listings masquerade as stock — read the seller
+
+Opening Walmart console listings that showed "Pickup today" and reading each page's seller line:
+
+| Listing | Seller | Condition | Price on product page |
+|---|---|---|---|
+| Xbox Series X 1TB Carbon Black | **AlwaysTech** (third-party) | new | $394.99 |
+| Xbox Series X Certified Refurbished | **BuySmart** (third-party) | Refurbished | $424.75 |
+| Xbox Series X 1TB SSD Black | **BuySmart** (third-party) | — | $492.50 |
+| PlayStation 5 Pro | **AlwaysTech** (third-party) | new | $599.75 |
+| PS5 Disc Slim (Refurbished) | **BuySmart** (third-party) | Refurbished | $424.75 |
+
+**None of these are Walmart.** They are marketplace sellers using Walmart's pickup network, which is why they display "Pickup today" exactly like first-party stock does.
+
+**And their prices are not stable.** The same PS5 Pro read **$2,399** on the search card and **$599.75** on its product page; the same Series X read **$1,970** then **$492.50**. A marketplace price that changes between two views of the same product cannot be quoted as fact — treat any single number as a snapshot at best, and verify at checkout.
 
 **Nothing else is in store.** Every other console checked came back sold out at the store level — see the negative results below rather than assuming silence means availability.
 
