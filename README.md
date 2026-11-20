@@ -10,26 +10,41 @@ _Last auto-check (Canada Computers): **2026-11-20 16:07 EST**._
 
 ## Table of Contents
 
-- [PLAY NOW — available items](#play-now--available-items)
+- [PLAY NOW — where you can actually play](#play-now--where-you-can-actually-play)
+- [CONSOLES FOR SALE — available items](#consoles-for-sale--available-items)
 - [Table 1 — VERIFIED](#table-1--verified)
 - [Table 2 — UNVERIFIED (site blocks bots)](#table-2--unverified-site-blocks-bots--manual-check-required)
 - [Notes](#notes)
 
-## PLAY NOW — available items
+## PLAY NOW — where you can actually play
 
-Everything currently buyable, grouped in one place. **Verified** rows were read by the tracker; **user-reported** rows were found by a person and may be stale.
+Places to play consoles/PCs by the hour in Toronto. These **rent play time**; they do not sell hardware.
+
+| Venue | What | Pricing | Location |
+|---|---|---|---|
+| Invictus Game Station | PC gaming lounge | Hourly play / day pass, per person | Yonge Street, 2nd Floor, Toronto, ON M4Y 1Z1 — https://invictusgamestation.com/ |
+
+> :warning: **CAUTION — manually found, may not be up to date.** Venue hours, pricing and
+> station availability change constantly and are not machine-checked. **Call ahead.**
+> Some "internet cafes" are PC-only — confirm they have console stations before going.
+
+## CONSOLES FOR SALE — available items
 
 | Item | Price | Status | Where | Link |
 |---|---|---|---|---|
-| Xbox Series X 1TB | $1,299.50 | ✅ In stock | Amazon.ca — free delivery Nov 26–27 | https://www.amazon.ca/dp/B0BMXVWSD6 |
-| Xbox Series S 512GB | $649.96 | ✅ In stock | Amazon.ca — delivery Sat Dec 5 | https://www.amazon.ca/dp/B0FLL9VRL5 |
-| PS5 Digital Edition (Slim) | $1,099.99 | ✅ "Only 4 left" | Amazon.ca — delivery Nov 26–27 | https://www.amazon.ca/dp/B0CL7NKBBL |
-| PS5 Slim Disc Edition | — | ⚠️ User-reported | Best Buy — not machine-verified | https://www.bestbuy.ca/en-ca/product/playstation-5-disc-edition-console-slim/19609594 |
+| Xbox Series X 1TB | $1,299.50 | ✅ In stock (verified) | Amazon.ca — free delivery Nov 26–27 | https://www.amazon.ca/dp/B0BMXVWSD6 |
+| Xbox Series S 512GB | $649.99 | ✅ In stock (verified, qty≈587) | Best Buy — **delivery only**, no store pickup | https://www.bestbuy.ca/en-ca/product/xbox-series-s-512gb-console/19422130 |
+| Xbox Series S 512GB | $649.96 | ✅ In stock (verified) | Amazon.ca — delivery Sat Dec 5 | https://www.amazon.ca/dp/B0FLL9VRL5 |
+| PS5 Digital Edition (Slim) | $1,099.99 | ✅ "Only 4 left" (verified) | Amazon.ca — delivery Nov 26–27 | https://www.amazon.ca/dp/B0CL7NKBBL |
+| PS5 Slim Disc Edition | $1,699.99 ⚠️ | ⚠️ 1 unit, marketplace seller | Best Buy — ~2× MSRP, not first-party | https://www.bestbuy.ca/en-ca/product/playstation-5-disc-edition-console-slim/19609594 |
+| PS5 Slim Disc Edition | — | ⚠️ User-reported | Best Buy | https://www.bestbuy.ca/en-ca/product/playstation-5-disc-edition-console-slim/19609594 |
 | PS5 Pro 2TB SSD | — | ⚠️ User-reported, **open box** | Best Buy — returned unit; check grade + warranty | https://www.bestbuy.ca/en-ca/product/playstation-5-pro-console-with-2tb-ssd-ai-enhanced-4k-resolution-playstation-spectral-super-resolution-open-box/20351327 |
 
-> :warning: **CAUTION on the ⚠️ rows — manually found, may not be up to date.**
-> They were reported available online by a person, not verified by the tracker: Best Buy
-> returns HTTP 403 to automated checks. Stock changes hourly — **confirm on the page before buying.**
+> :warning: **CAUTION on ⚠️ rows — manually found, may not be up to date.** Reported by a
+> person, not verified by the tracker (Best Buy blocks automated checks). **Confirm before buying.**
+>
+> :pushpin: **No console is available for in-store pickup in downtown Toronto.** Best Buy's API returns
+> `pickup=NotAvailable` for every console SKU — their console sales are delivery-only.
 
 ## Table 1 — VERIFIED
 
