@@ -64,3 +64,30 @@ Keyword scraping is not a stock check. The PS5 page contained "add to cart" and
 "sold out" simultaneously — a regex would have called it available. Per-SKU
 availability JSON (`InStock` / `SoldOutOnline` / `InStockOnlineOnly`) is the
 only signal that distinguishes "the console" from "a controller on the same page".
+
+## Xbox scrape — 2026-11-20T21:37Z
+
+Same authenticated CDP session. Where a page was ambiguous, the per-SKU
+availability API was queried instead of trusting keywords.
+
+| Source | Result | Reading |
+|---|---|---|
+| Best Buy API — Series S 512GB (19422130) | `InStock qty=577` | ✅ Buyable, delivery only. qty fell 587 → 577 in ~26 min, so it is real moving inventory, not a static flag. |
+| Best Buy API — Series S 1TB (19422127) | `SoldOutOnline qty=0` | ⛔ |
+| Best Buy API — Series X 1TB (20189840) | `SoldOutOnline qty=0` | ⛔ |
+| Best Buy API — Series X 1TB Digital (19422129) | `SoldOutOnline qty=0` | ⛔ |
+| Best Buy Xbox landing page | 200, prices $649.99 … $1,149.99, "in stock" | Browse page — mixed SKUs, not attributable to one console |
+| Microsoft Store Xbox | 200, "in stock" | Generic boilerplate text; no per-console status extracted |
+| Google Shopping — "xbox series x" | $769.99 … $2,999.00 | Wide spread = bundles/marketplace; no stock word at all |
+| Canada Computers — Series X 1TB | 200, $729.99, **"sold out"** | ⛔ sold out online + all locations |
+
+### Reading
+
+- **Series S 512GB at Best Buy is the one genuinely buyable Xbox**, and the only
+  console in this tracker with live, corroborated inventory — API says InStock,
+  the rendered page showed "Add to Cart", and the quantity is decreasing.
+- **Every Series X SKU is sold out** at Best Buy, and the Series X is sold out at
+  Canada Computers too. If you want a Series X specifically, there is no verified
+  stock right now.
+- A page saying "in stock" is worthless without a SKU: the Best Buy Xbox landing
+  page mixes a $649.99 console with $1,149.99 bundles.
