@@ -10,20 +10,26 @@ _Last auto-check (Canada Computers): **2026-11-20 16:33 EST**._
 
 ## Table 1 — VERIFIED
 
-| Console | Price | Status | Where / delivery to downtown (M5G) | Link | Last updated (EST) |
-|---|---|---|---|---|---|
-| Xbox Series X 1TB | $1,299.50 | ✅ In Stock | Amazon.ca — FREE delivery Nov 26–27 | https://www.amazon.ca/dp/B0BMXVWSD6 | 2026-11-20 16:20 |
-| Xbox Series S 512GB | $649.96 | ✅ In stock (Add to Cart) | Amazon.ca — delivery Sat Dec 5 | https://www.amazon.ca/dp/B0FLL9VRL5 | 2026-11-20 16:20 |
-| PS5 Digital Edition (Slim) | $1,099.99 | ✅ "Only 4 left in stock" | Amazon.ca — delivery Nov 26–27 | https://www.amazon.ca/dp/B0CL7NKBBL | 2026-11-20 16:20 |
-| Xbox Series X 1TB (Black) | — | ⛔ Sold out (online + all stores) | Canada Computers — sold out online + all locations | https://www.canadacomputers.com/en/xbox/184244/microsoft-xbox-series-x-1tb-black-rrt-00001.html | 2026-11-20 16:33 EST |
-| Xbox Series X 1TB Digital (Robot White) | — | ⛔ Sold out (online + all stores) | Canada Computers — sold out online + all locations | https://www.canadacomputers.com/en/xbox/264257/xbox-series-x-1tb-digital-console-robot-white-ep2-00692.html | 2026-11-20 16:33 EST |
-| Xbox Series S 512GB | — | ⛔ Sold out (online + all stores) | Canada Computers — sold out online + all locations | https://www.canadacomputers.com/en/xbox/184250/microsoft-xbox-series-s-512-gb-all-digital-console-white-rrs-00001.html | 2026-11-20 16:33 EST |
-| Xbox Series S 1TB | — | ⛔ Sold out (online + all stores) | Canada Computers — sold out online + all locations | https://www.canadacomputers.com/en/xbox/264253/microsoft-xbox-series-s-1tb-console-robot-white-ep2-00634.html | 2026-11-20 16:33 EST |
-| PS5 Slim (Disc) | — | ⛔ Sold out (online + all stores) | Canada Computers — sold out online + all locations | https://www.canadacomputers.com/en/playstation/247956/sony-playstation-5-slim-console-1000039655-1000049888.html | 2026-11-20 16:33 EST |
-| PS5 Slim Digital 825GB | — | ⛔ Sold out (online + all stores) | Canada Computers — sold out online + all locations | https://www.canadacomputers.com/en/playstation/247955/sony-playstation-5-slim-console-digital-edition-1000039669-1000049898.html | 2026-11-20 16:33 EST |
-| PS5 Pro | — | ⛔ Sold out (online + all stores) | Canada Computers — sold out online + all locations | https://www.canadacomputers.com/en/playstation/263621/sony-playstation-5-pro-digital-edition-1000046547-1000050805.html | 2026-11-20 16:33 EST |
+First-party availability, Best Buy Canada API (postal M5B2H1), 2026-11-20 21:46Z.
+`InStock` = buyable · `InStockOnlineOnly` = buyable, online only · `SoldOutOnline` = not buyable.
 
-**How to read it:** a Canada Computers row turns ✅ the moment the store page shows an online or in-store quantity > 0. Toronto Downtown = 312 Yonge St; GTA stores (Markham, etc.) count too.
+| Console | Best Buy SKU | Status | Qty | Pickup |
+|---|---|---|---|---|
+| **Xbox Series S 512GB** | 19422130 | ✅ **InStock** | **575** | ⛔ NotAvailable |
+| PS5 Disc Slim | 19609594 | ⚠️ InStockOnlineOnly — marketplace seller, ~2x MSRP | 1 | OnlineOnly |
+| Xbox Series S 1TB | 19422127 | ⛔ SoldOutOnline | 0 | — |
+| Xbox Series X 1TB | 20189840 | ⛔ SoldOutOnline | 0 | — |
+| Xbox Series X 1TB Digital | 19422129 | ⛔ SoldOutOnline | 0 | — |
+| Xbox Series X 2TB Galaxy | 20105824 | ⛔ SoldOutOnline | 0 | — |
+| PS5 Slim 1TB | 19446111 | ⛔ SoldOutOnline | 0 | — |
+| PS5 Slim Digital 825GB | 19446112 | ⛔ SoldOutOnline | 0 | — |
+| PS5 Pro | 19492009 | ⛔ SoldOutOnline | 0 | — |
+
+**One console is genuinely available: Xbox Series S 512GB, qty 575.** It fell 594 → 587 → 577 → 575 over ~45 min, so it is real moving inventory, not a static flag.
+
+> :pushpin: **Pickup is `NotAvailable` for every console SKU** — Best Buy does not do in-store pickup on consoles. Delivery only, so there is no downtown-Toronto shelf to walk to.
+
+Canada Computers (all Xbox SKUs sold out online + all locations; no PS5 consoles carried) is in [FINDINGS.md](FINDINGS.md), since it is not a Best Buy SKU.
 
 ## Table 2 — UNVERIFIED (site blocks bots — manual check required)
 
