@@ -16,10 +16,10 @@ In-stock check for **Xbox Series X / S** and **PlayStation 5** for **downtown To
 | Xbox Series X 1TB (black) | — | ⛔ Sold out (0) | Canada Computers — all stores incl. 312 Yonge St | https://www.canadacomputers.com/en/xbox/184244/microsoft-xbox-series-x-1tb-black-rrt-00001.html | 2026-11-20 15:52 |
 | Xbox Series S 512GB | — | ⛔ Sold out (0) | Canada Computers — all stores incl. 312 Yonge St | https://www.canadacomputers.com/en/xbox/184250/microsoft-xbox-series-s-512-gb-all-digital-console-white-rrs-00001.html | 2026-11-20 15:52 |
 | PS5 Slim (disc) | — | ⛔ Sold out (0) | Canada Computers — incl. 312 Yonge St | https://www.canadacomputers.com/en/playstation/247956/sony-playstation-5-slim-console-1000039655-1000049888.html | 2026-11-20 15:52 |
-| PS5 Slim Digital 825GB | — | ⛔ 0 downtown; 2 in Markham | Canada Computers — 312 Yonge St = 0 | https://www.canadacomputers.com/en/playstation/247955/sony-playstation-5-slim-console-digital-edition-1000039669-1000049898.html | 2026-11-20 15:52 |
+| PS5 Slim Digital 825GB | — | ⛔ 0 everywhere (incl. Markham) | Canada Computers — Playwright re-check all stores = 0 | https://www.canadacomputers.com/en/playstation/247955/sony-playstation-5-slim-console-digital-edition-1000039669-1000049898.html | 2026-11-20 16:15 |
 | PS5 Pro | — | ⛔ Sold out (0) | Canada Computers — all stores | https://www.canadacomputers.com/en/playstation/263621/sony-playstation-5-pro-digital-edition-1000046547-1000050805.html | 2026-11-20 15:52 |
 
-**Downtown in-store bottom line:** the only store I could fully browser-validate (Canada Computers, 312 Yonge St) has **no console in stock**. Fastest verified way to get one today = **Amazon.ca delivers to M5G** (Xbox Series X in stock; Xbox Series S in stock; PS5 Digital Slim 4 left).
+**Bottom line:** Canada Computers has **no console in stock at any GTA store** per my latest browser re-check (earlier scrape briefly showed Markham = 2; that unit appears to have sold between checks). Fastest verified way to get one delivered to downtown M5G today = **Amazon.ca** (Xbox Series X in stock; Xbox Series S in stock; PS5 Digital Slim "Only 4 left").
 
 ## Table 2 — UNVERIFIED (site blocks bots — manual check required)
 
