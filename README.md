@@ -8,6 +8,19 @@ In-stock check for **Xbox Series X / S** and **PlayStation 5** for **downtown To
 
 _Last auto-check (Canada Computers): **2026-11-20 16:03 EST**._
 
+## AVAILABLE NOW — user-reported (manually found)
+
+> :warning: **CAUTION — manually found, may not be up to date.** These were reported
+> available online by a person, not verified by the tracker: Best Buy returns HTTP 403
+> to automated checks. Stock changes hourly — **confirm on the page before buying.**
+
+| Item | Status | Link |
+|---|---|---|
+| PlayStation 5 Slim Disc Edition | Reported available online | https://www.bestbuy.ca/en-ca/product/playstation-5-disc-edition-console-slim/19609594 |
+| PlayStation 5 Pro 2TB SSD | Reported available online — **open box** (returned unit; check condition grade and warranty) | https://www.bestbuy.ca/en-ca/product/playstation-5-pro-console-with-2tb-ssd-ai-enhanced-4k-resolution-playstation-spectral-super-resolution-open-box/20351327 |
+
+_Last manual entry: 2026-11-20. If you find one of these sold out, edit this section._
+
 ## Table 1 — VERIFIED
 
 | Console | Price | Status | Where / delivery to downtown (M5G) | Link | Last updated (EST) |
