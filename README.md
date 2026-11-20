@@ -6,45 +6,7 @@ In-stock check for **Xbox Series X / S** and **PlayStation 5** for **downtown To
 - **Unverified** rows = retailer blocks automated browsers → a human must confirm (link/phone given).
 - All times **EST**. This file is auto-updated by `.github/workflows/stock-monitor.yml`.
 
-_Last auto-check (Canada Computers): **2026-11-20 16:07 EST**._
-
-## Table of Contents
-
-- [PLAY NOW — where you can actually play (Downtown only)](#play-now--where-you-can-actually-play-downtown-toronto-only)
-- [CONSOLES FOR SALE — available items](#consoles-for-sale--available-items)
-- [Table 1 — VERIFIED](#table-1--verified)
-- [Table 2 — UNVERIFIED (site blocks bots)](#table-2--unverified-site-blocks-bots--manual-check-required)
-- [Notes](#notes)
-
-## PLAY NOW — where you can actually play (Downtown Toronto only)
-
-Places to play consoles/PCs by the hour **in Downtown Toronto**. These **rent play time**; they do not sell hardware. GTA-area venues are out of scope for this section.
-
-| Venue | What | Pricing | Location |
-|---|---|---|---|
-| Invictus Game Station | PC gaming lounge | Hourly play / day pass, per person | Yonge Street, 2nd Floor, Downtown Toronto, ON M4Y 1Z1 — https://invictusgamestation.com/ |
-
-> :warning: **CAUTION — manually found, may not be up to date.** Venue hours, pricing and
-> station availability change constantly and are not machine-checked. **Call ahead.**
-> Some "internet cafes" are PC-only — confirm they have console stations before going.
-
-## CONSOLES FOR SALE — available items
-
-| Item | Price | Status | Where | Link |
-|---|---|---|---|---|
-| Xbox Series X 1TB | $1,299.50 | ✅ In stock (verified) | Amazon.ca — free delivery Nov 26–27 | https://www.amazon.ca/dp/B0BMXVWSD6 |
-| Xbox Series S 512GB | $649.99 | ✅ In stock (verified, qty≈587) | Best Buy — **delivery only**, no store pickup | https://www.bestbuy.ca/en-ca/product/xbox-series-s-512gb-console/19422130 |
-| Xbox Series S 512GB | $649.96 | ✅ In stock (verified) | Amazon.ca — delivery Sat Dec 5 | https://www.amazon.ca/dp/B0FLL9VRL5 |
-| PS5 Digital Edition (Slim) | $1,099.99 | ✅ "Only 4 left" (verified) | Amazon.ca — delivery Nov 26–27 | https://www.amazon.ca/dp/B0CL7NKBBL |
-| PS5 Slim Disc Edition | $1,699.99 ⚠️ | ⚠️ 1 unit, marketplace seller | Best Buy — ~2× MSRP, not first-party | https://www.bestbuy.ca/en-ca/product/playstation-5-disc-edition-console-slim/19609594 |
-| PS5 Slim Disc Edition | — | ⚠️ User-reported | Best Buy | https://www.bestbuy.ca/en-ca/product/playstation-5-disc-edition-console-slim/19609594 |
-| PS5 Pro 2TB SSD | — | ⚠️ User-reported, **open box** | Best Buy — returned unit; check grade + warranty | https://www.bestbuy.ca/en-ca/product/playstation-5-pro-console-with-2tb-ssd-ai-enhanced-4k-resolution-playstation-spectral-super-resolution-open-box/20351327 |
-
-> :warning: **CAUTION on ⚠️ rows — manually found, may not be up to date.** Reported by a
-> person, not verified by the tracker (Best Buy blocks automated checks). **Confirm before buying.**
->
-> :pushpin: **No console is available for in-store pickup in downtown Toronto.** Best Buy's API returns
-> `pickup=NotAvailable` for every console SKU — their console sales are delivery-only.
+_Last auto-check (Canada Computers): **2026-11-20 16:33 EST**._
 
 ## Table 1 — VERIFIED
 
@@ -53,13 +15,13 @@ Places to play consoles/PCs by the hour **in Downtown Toronto**. These **rent pl
 | Xbox Series X 1TB | $1,299.50 | ✅ In Stock | Amazon.ca — FREE delivery Nov 26–27 | https://www.amazon.ca/dp/B0BMXVWSD6 | 2026-11-20 16:20 |
 | Xbox Series S 512GB | $649.96 | ✅ In stock (Add to Cart) | Amazon.ca — delivery Sat Dec 5 | https://www.amazon.ca/dp/B0FLL9VRL5 | 2026-11-20 16:20 |
 | PS5 Digital Edition (Slim) | $1,099.99 | ✅ "Only 4 left in stock" | Amazon.ca — delivery Nov 26–27 | https://www.amazon.ca/dp/B0CL7NKBBL | 2026-11-20 16:20 |
-| Xbox Series X 1TB (Black) | — | ⛔ Sold out (online + all stores) | Canada Computers — sold out online + all locations | https://www.canadacomputers.com/en/xbox/184244/microsoft-xbox-series-x-1tb-black-rrt-00001.html | 2026-11-20 16:07 EST |
-| Xbox Series X 1TB Digital (Robot White) | — | ⛔ Sold out (online + all stores) | Canada Computers — sold out online + all locations | https://www.canadacomputers.com/en/xbox/264257/xbox-series-x-1tb-digital-console-robot-white-ep2-00692.html | 2026-11-20 16:07 EST |
-| Xbox Series S 512GB | — | ⛔ Sold out (online + all stores) | Canada Computers — sold out online + all locations | https://www.canadacomputers.com/en/xbox/184250/microsoft-xbox-series-s-512-gb-all-digital-console-white-rrs-00001.html | 2026-11-20 16:07 EST |
-| Xbox Series S 1TB | — | ⛔ Sold out (online + all stores) | Canada Computers — sold out online + all locations | https://www.canadacomputers.com/en/xbox/264253/microsoft-xbox-series-s-1tb-console-robot-white-ep2-00634.html | 2026-11-20 16:07 EST |
-| PS5 Slim (Disc) | — | ⛔ Sold out (online + all stores) | Canada Computers — sold out online + all locations | https://www.canadacomputers.com/en/playstation/247956/sony-playstation-5-slim-console-1000039655-1000049888.html | 2026-11-20 16:07 EST |
-| PS5 Slim Digital 825GB | — | ⛔ Sold out (online + all stores) | Canada Computers — sold out online + all locations | https://www.canadacomputers.com/en/playstation/247955/sony-playstation-5-slim-console-digital-edition-1000039669-1000049898.html | 2026-11-20 16:07 EST |
-| PS5 Pro | — | ⛔ Sold out (online + all stores) | Canada Computers — sold out online + all locations | https://www.canadacomputers.com/en/playstation/263621/sony-playstation-5-pro-digital-edition-1000046547-1000050805.html | 2026-11-20 16:07 EST |
+| Xbox Series X 1TB (Black) | — | ⛔ Sold out (online + all stores) | Canada Computers — sold out online + all locations | https://www.canadacomputers.com/en/xbox/184244/microsoft-xbox-series-x-1tb-black-rrt-00001.html | 2026-11-20 16:33 EST |
+| Xbox Series X 1TB Digital (Robot White) | — | ⛔ Sold out (online + all stores) | Canada Computers — sold out online + all locations | https://www.canadacomputers.com/en/xbox/264257/xbox-series-x-1tb-digital-console-robot-white-ep2-00692.html | 2026-11-20 16:33 EST |
+| Xbox Series S 512GB | — | ⛔ Sold out (online + all stores) | Canada Computers — sold out online + all locations | https://www.canadacomputers.com/en/xbox/184250/microsoft-xbox-series-s-512-gb-all-digital-console-white-rrs-00001.html | 2026-11-20 16:33 EST |
+| Xbox Series S 1TB | — | ⛔ Sold out (online + all stores) | Canada Computers — sold out online + all locations | https://www.canadacomputers.com/en/xbox/264253/microsoft-xbox-series-s-1tb-console-robot-white-ep2-00634.html | 2026-11-20 16:33 EST |
+| PS5 Slim (Disc) | — | ⛔ Sold out (online + all stores) | Canada Computers — sold out online + all locations | https://www.canadacomputers.com/en/playstation/247956/sony-playstation-5-slim-console-1000039655-1000049888.html | 2026-11-20 16:33 EST |
+| PS5 Slim Digital 825GB | — | ⛔ Sold out (online + all stores) | Canada Computers — sold out online + all locations | https://www.canadacomputers.com/en/playstation/247955/sony-playstation-5-slim-console-digital-edition-1000039669-1000049898.html | 2026-11-20 16:33 EST |
+| PS5 Pro | — | ⛔ Sold out (online + all stores) | Canada Computers — sold out online + all locations | https://www.canadacomputers.com/en/playstation/263621/sony-playstation-5-pro-digital-edition-1000046547-1000050805.html | 2026-11-20 16:33 EST |
 
 **How to read it:** a Canada Computers row turns ✅ the moment the store page shows an online or in-store quantity > 0. Toronto Downtown = 312 Yonge St; GTA stores (Markham, etc.) count too.
 
