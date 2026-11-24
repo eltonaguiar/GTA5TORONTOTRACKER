@@ -380,9 +380,31 @@ def main():
         import os
         site_dir = Path(__file__).resolve().parent.parent / "docs"
         site_dir.mkdir(exist_ok=True)
-        (site_dir / "data.json").write_text(
-            json.dumps(build_site_data(rows, live_rows, stamp), indent=1, ensure_ascii=False),
-            encoding="utf-8")
+        data_path = site_dir / "data.json"
+        fresh = build_site_data(rows, live_rows, stamp)
+
+        # Carry forward retailers that returned nothing this run. A CI runner's IP sometimes
+        # gets refused by one source; silently dropping that retailer makes the table look
+        # like the stock vanished, which is worse than showing slightly stale rows.
+        try:
+            prev = json.loads(data_path.read_text(encoding="utf-8"))
+        except Exception:
+            prev = {"rows": []}
+        have = {r["retailer"] for r in fresh["rows"]}
+        carried = []
+        for r in prev.get("rows", []):
+            if r.get("retailer") in have or r.get("status") == "pending":
+                continue
+            r = dict(r)
+            r["note"] = ((r.get("note") or "") +
+                         f" [carried forward from {r.get('checked','earlier')}; "
+                         "source did not answer this run]").strip()
+            carried.append(r)
+        if carried:
+            fresh["rows"].extend(carried)
+            print(f"[WARN] carried forward {len(carried)} rows from {sorted({r['retailer'] for r in carried})}")
+
+        data_path.write_text(json.dumps(fresh, indent=1, ensure_ascii=False), encoding="utf-8")
         print(f"Wrote {site_dir / 'data.json'}")
     except Exception as e:
         print(f"[FAIL] site data: {e}")
