@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - "docs/**"
+      - "scripts/**"
       - ".github/workflows/pages.yml"
   workflow_dispatch:
 
@@ -18,13 +19,23 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  # Regenerate docs/data.json from the live first-party APIs so the table is never stale.
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install deps
+        run: pip install --quiet curl_cffi
+
+      - name: Refresh data + README
+        # Best effort: a dead retailer endpoint must not block the deploy.
+        continue-on-error: true
+        run: python scripts/check_stock.py
 
       - uses: actions/configure-pages@v5
 
@@ -32,5 +43,14 @@ jobs:
         with:
           path: docs
 
+  # Deploy MUST be a separate job. Uploading and deploying inside one job races the
+  # artifact index and fails with 'No artifacts named "github-pages" were found'.
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
       - id: deployment
         uses: actions/deploy-pages@v4
