@@ -1,0 +1,31 @@
+{
+  "curl_cffi_chrome": {
+    "status": 200,
+    "ja3_hash": "4a48793f2fc5042eacbdba8ce257e441",
+    "ja4": "t13d1516h2_8daaf6152771_806a8c22fdea",
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like "
+  },
+  "plain_requests": {
+    "status": 200,
+    "ja3_hash": "0149f47eabf9a20d0893e2a44e5a6323",
+    "ja4": "t13d3112h1_e8f1e7e78f70_b26ce05bbdd6"
+  },
+  "scrapling": {
+    "ok": true,
+    "text_sample": "Xbox Series X\nIn Stock",
+    "has_stock_word": true
+  },
+  "chrome": {
+    "google-chrome": "/usr/bin/google-chrome",
+    "chromium": "/snap/bin/chromium",
+    "chromium-browser": "/usr/bin/chromium-browser"
+  },
+  "nodriver": {
+    "ok": true,
+    "version": "0.50.99"
+  },
+  "patchright": {
+    "ok": true,
+    "version": "1.63.0"
+  }
+}
