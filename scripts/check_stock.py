@@ -26,6 +26,19 @@ import urllib.request
 
 EST = datetime.timezone(datetime.timedelta(hours=-5))
 
+# ---------------------------------------------------------------- console filter
+# A console row must name a console AND must not be a game/accessory/bundle.
+CONSOLE_RE = re.compile(r"(xbox\s+series\s+[xs]\b|playstation\s*5\b|\bps5\b)", re.I)
+NON_CONSOLE_RE = re.compile(
+    r"(forza|nba\b|nhl\b|fifa|madden|spider-?man|\bgame\b|\bjeu\b|controller|manette|"
+    r"headset|casque|charging|\bdock\b|accessor|bundle|\blot\b|skin\b|\bcase\b|\bsteelbook\b)",
+    re.I)
+
+def is_console(name: str) -> bool:
+    """True only for the console itself (not a game, accessory, or bundle)."""
+    n = name or ""
+    return bool(CONSOLE_RE.search(n)) and not bool(NON_CONSOLE_RE.search(n))
+
 def now_est() -> str:
     return datetime.datetime.now(EST).strftime("%Y-%m-%d %H:%M EST")
 
@@ -145,6 +158,9 @@ def fetch_bestbuy():
         ship = (a.get("shipping") or {}).get("status", "?")
         pick = (a.get("pickup") or {}).get("status", "?")
         seller = a.get("sellerId") or "?"
+        if not is_console(name):
+            print(f"[SKIP] bestbuy non-console: {name[:60]}")
+            continue
         ok = ship == "InStock"
         out.append({"name": name, "price": "—",
                     "status": ("✅ " if ok else "❌ ") + f"online {ship} · pickup {pick}",
@@ -156,6 +172,28 @@ def fetch_bestbuy():
 
 
 STAPLES_QUERIES = ["playstation 5", "xbox series x"]
+
+
+def staples_availability(url: str):
+    """Return True/False from the product page's schema.org availability, else None.
+
+    Shopify's suggest.json `available` flag is stale: it reported True for SKUs
+    whose page JSON-LD said OutOfStock (verified 2026-11-24). Never trust it.
+    """
+    page = url if url.startswith("http") else "https://www.staples.ca" + url
+    status, body = fetch(page)
+    if not (isinstance(status, int) and status == 200 and body):
+        return None
+    m = re.search(r'"availability"\s*:\s*"([^"]+)"', body)
+    if m:
+        a = m.group(1).rsplit("/", 1)[-1].lower()
+        return ("instock" in a) if ("stock" in a) else None
+    low = body.lower()
+    if "out of stock" in low or "sold out" in low:
+        return False
+    if "in stock" in low or "add to cart" in low:
+        return True
+    return None
 
 
 def fetch_staples():
@@ -174,18 +212,29 @@ def fetch_staples():
         except Exception as e:
             print(f"[FAIL] staples parse {q}: {e}")
             continue
+        kept = 0
         for p in prods:
-            price = p.get("price")
-            avail = str(p.get("available", "")).strip().lower()
-            ok = avail not in ("", "0", "false")
+            title = str(p.get("title", ""))
+            if not is_console(title):
+                continue
             url = p.get("url") or ""
-            out.append({"name": str(p.get("title", ""))[:90],
+            real = staples_availability(url)
+            price = p.get("price")
+            if real is True:
+                status = "✅ InStock"
+            elif real is False:
+                status = "❌ OutOfStock"
+            else:
+                status = "⚠️ check failed (page unavailable)"
+            out.append({"name": title[:90],
                         "price": f"${price}" if price else "—",
-                        "status": ("✅ " if ok else "❌ ") + ("available online" if ok else "unavailable"),
+                        "status": status,
                         "where": "Staples Canada",
                         "link": ("https://www.staples.ca" + url) if url.startswith("/") else url,
                         "stamp": now_est()})
-        print(f"[OK] staples {q}: {len(prods)} products")
+            kept += 1
+            import time as _t; _t.sleep(1)
+        print(f"[OK] staples {q}: {kept} console(s) kept of {len(prods)} results")
     return out
 
 
@@ -286,11 +335,13 @@ def build_readme(cc_rows, stamp, live_rows=None):
     if live_rows:
         a("## ✅ LIVE VERIFIED — auto-checked this run (newest first)\n")
         a(f"_Fetched **{stamp}** from first-party JSON APIs: Best Buy `ecomm-api` and "
-          "Staples Shopify `suggest.json`. Real API responses, not scraping guesses. "
+          "Staples product-page JSON-LD (`schema.org/OutOfStock`). "
           "`sellerId: bbyca` = Best Buy's own stock, not a marketplace reseller._\n")
         a("| Console | Price | Status | Where | Link | Checked (EST) |")
         a("|---|---|---|---|---|---|")
         for r in live_rows:
+            if not is_console(r["name"]):
+                continue
             a(f"| {r['name']} | {r['price']} | {r['status']} | {r['where']} | {r['link']} | {r['stamp']} |")
         a("")
     a("## AVAILABLE NOW — user-reported (manual entries, preserved across runs)\n")
@@ -305,8 +356,12 @@ def build_readme(cc_rows, stamp, live_rows=None):
     a("| Console | Price | Status | Where / delivery to downtown (M5G) | Link | Last updated (EST) |")
     a("|---|---|---|---|---|---|")
     for r in AMAZON_ROWS:
+        if not is_console(r[0]):
+            continue
         a(f"| {r[0]} | {r[1]} | {r[2]} | {r[3]} | {r[4]} | {r[5]} |")
     for r in cc_rows:
+        if not is_console(r["console"]):
+            continue
         a(f"| {r['console']} | — | {r['status']} | {r['where']} | {r['link']} | {r['stamp']} |")
     a("")
     a("**How to read it:** a Canada Computers row turns ✅ the moment the store "
@@ -319,7 +374,7 @@ def build_readme(cc_rows, stamp, live_rows=None):
     a("| Best Buy Canada | PS5 Slim 1TB | `ecomm-api` reports online status directly | https://www.bestbuy.ca/en-ca/product/playstation-5-slim-1tb-console/19446111 | auto |")
     a("| EB Games / GameStop (267 Yonge St) | PS5 / Xbox store stock | Cloudflare; gamestop.ca does not resolve | https://www.ebgames.ca/ | 2026-11-20 16:00 |")
     a("| Walmart Canada | Consoles — **marketplace resellers list PS5 at $1899+ (seller BuySmart) vs $1099.99 first-party elsewhere**. Do not buy without checking the seller field | plain HTTP + every known JSON API 403s; a headful real Chrome does load search results, but prices are mostly reseller markup | https://www.walmart.ca/en/search?q=playstation+5 | 2026-11-24 09:00 |")
-    a("| Staples | **NOW AUTO-VERIFIED** — see LIVE VERIFIED above | Site is Shopify; `search/suggest.json` returns clean product JSON (verified 2026-11-24) | https://www.staples.ca/search?query=playstation+5 | auto |")
+    a("| Staples | **NOW AUTO-VERIFIED** — see LIVE VERIFIED above | Shopify product-page JSON-LD `availability` (the `suggest.json` flag was stale and wrong) | https://www.staples.ca/search?query=playstation+5 | auto |")
     a("| Memory Express | Consoles | Cloudflare challenge | https://www.memoryexpress.com/ | 2026-11-20 16:00 |")
     a("| Gamerama (local) | Xbox/PS5 shelf stock | Phone verify | 2470 Yonge St — 416-487-8802 | 2026-11-20 16:00 |")
     a("| Queen East Appliance Centre (local) | Consoles | Phone verify | 1180 Queen St E — 416-463-6551 | 2026-11-20 16:00 |")

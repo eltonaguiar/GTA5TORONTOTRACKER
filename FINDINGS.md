@@ -116,3 +116,40 @@ Best Buy's Series S 512GB quantity is the only corroborated inventory in this tr
 and it is draining: **587 → 577** (2026-11-20) → **105** (2026-11-24). Amazon
 independently shows the same console in stock with next-day delivery, which is the
 first two-source agreement on a buyable console since this tracker started.
+
+## 2026-11-24 — two corrections: games listed as consoles; Staples status was wrong
+
+### 1. Games were listed as consoles
+The Staples query returned game SKUs and the table listed them as hardware, e.g.
+"Microsoft Forza Motorsport for XBox Series X [Disc]" ($89.99). That is not a console.
+
+**Fix:** `scripts/check_stock.py` now has `is_console(name)` — the name must match
+`xbox series X/S` or `PlayStation 5`/`PS5` **and** must not match a game/accessory/
+bundle list (`forza|nba|nhl|fifa|madden|spider-man|game|jeu|controller|manette|
+headset|casque|charging|dock|accessor|bundle|lot|skin|case|steelbook`). The filter is
+applied at fetch time and again at render time.
+
+### 2. Staples "available online" was false
+Shopify `search/suggest.json` reported `available: true` for every SKU, but the
+product page's JSON-LD said otherwise. Checked all 10 Staples SKUs from the table:
+
+| Handle (prefix) | JSON-LD availability |
+|---|---|
+| 3103551 (PS5 Pro, EN + FR) | **OutOfStock** |
+| 3140351 (PS5 Digital/Slim 825GB, EN + FR) | **OutOfStock** |
+| 3140352 (PS5 Slim 1TB/1To, EN + FR) | **OutOfStock** |
+| 3104045 (Xbox Series X Digital 1TB, EN + FR) | **OutOfStock** |
+| 2993232 (Xbox Series X, EN + FR) | **OutOfStock** |
+
+**Fix:** `fetch_staples()` no longer trusts `suggest.json.available`. It fetches each
+product page and reads `"availability": "https://schema.org/OutOfStock|InStock"`
+(from JSON-LD), with an "out of stock / sold out" text fallback. If the page cannot
+be read, the row says **check failed** — never a fake "available".
+
+### Guard
+`scripts/assert_console_only.py` fails if any row in README's console tables contains
+a game/accessory/bundle. It runs in `.github/workflows/stock-monitor.yml` immediately
+after the scrape step, so a regression cannot be auto-committed.
+
+**Verified after fix:** `grep -ciE "forza|nba|nhl|fifa|madden" README.md` → **0**;
+guard → **OK**; 6 console rows kept from Staples, all ❌ OutOfStock.

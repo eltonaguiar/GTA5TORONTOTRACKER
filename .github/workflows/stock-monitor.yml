@@ -31,6 +31,9 @@ jobs:
       - name: Scrape Canada Computers + rebuild README
         run: python scripts/check_stock.py
 
+      - name: Guard — no games/accessories in console tables
+        run: python scripts/assert_console_only.py
+
       - name: Commit & push if README changed
         run: |
           git config user.name  "stock-monitor[bot]"
