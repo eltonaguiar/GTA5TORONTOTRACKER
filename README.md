@@ -6,18 +6,17 @@ In-stock check for **Xbox Series X / S** and **PlayStation 5** for **downtown To
 - **Unverified** rows = retailer blocks automated browsers → a human must confirm (link/phone given).
 - All times **EST**. This file is auto-updated by `.github/workflows/stock-monitor.yml`.
 
-_Last auto-check (Canada Computers): **2026-11-24 05:30 EST**._
+_Last auto-check (Canada Computers): **2026-11-24 05:31 EST**._
 
-## ✅ LIVE VERIFIED — auto-checked this run (newest first)
+## ✅ IN STOCK NOW — auto-checked this run
 
-_Fetched **2026-11-24 05:30 EST** from first-party JSON APIs: Best Buy `ecomm-api` and Staples product-page JSON-LD (`schema.org/OutOfStock`). `sellerId: bbyca` = Best Buy's own stock, not a marketplace reseller._
+_1 in-stock listing(s) shown; **16 out-of-stock listing(s) hidden** (we only list consoles you can actually buy). Checked 2026-11-24 05:31 EST._
+
+_Fetched **2026-11-24 05:31 EST** from first-party JSON APIs: Best Buy `ecomm-api` and Staples product-page JSON-LD (`schema.org/OutOfStock`). `sellerId: bbyca` = Best Buy's own stock, not a marketplace reseller._
 
 | Console | Price | Status | Where | Link | Checked (EST) |
 |---|---|---|---|---|---|
-| Xbox Series S 512GB | — | ✅ online InStock · pickup NotAvailable | Best Buy Canada (bbyca) | https://www.bestbuy.ca/en-ca/product/19422130 | 2026-11-24 05:30 EST |
-| PS5 Slim 1TB | — | ❌ online SoldOutOnline · pickup NotAvailable | Best Buy Canada (bbyca) | https://www.bestbuy.ca/en-ca/product/19446111 | 2026-11-24 05:30 EST |
-| PS5 Slim Disc Edition | — | ❌ online SoldOutOnline · pickup OnlineOnly | Best Buy Canada (68343186) | https://www.bestbuy.ca/en-ca/product/19609594 | 2026-11-24 05:30 EST |
-| PS5 Pro 2TB (open box) | — | ❌ online SoldOutOnline · pickup OnlineOnly | Best Buy Canada (1241539) | https://www.bestbuy.ca/en-ca/product/20351327 | 2026-11-24 05:30 EST |
+| Xbox Series S 512GB | — | ✅ InStock | Best Buy Canada (bbyca) | https://www.bestbuy.ca/en-ca/product/19422130 | 2026-11-24 05:31 EST |
 
 ## AVAILABLE NOW — user-reported (manual entries, preserved across runs)
 
@@ -35,13 +34,6 @@ _Fetched **2026-11-24 05:30 EST** from first-party JSON APIs: Best Buy `ecomm-ap
 | Xbox Series X 1TB | $1,299.50 | ✅ In Stock | Amazon.ca — FREE delivery Nov 26–27 | https://www.amazon.ca/dp/B0BMXVWSD6 | 2026-11-20 16:20 |
 | Xbox Series S 512GB | $649.96 | ✅ In stock (Add to Cart) | Amazon.ca — delivery Sat Dec 5 | https://www.amazon.ca/dp/B0FLL9VRL5 | 2026-11-20 16:20 |
 | PS5 Digital Edition (Slim) | $1,099.99 | ✅ "Only 4 left in stock" | Amazon.ca — delivery Nov 26–27 | https://www.amazon.ca/dp/B0CL7NKBBL | 2026-11-20 16:20 |
-| Xbox Series X 1TB (Black) | — | ⛔ Sold out (online + all stores) | Canada Computers — sold out online + all locations | https://www.canadacomputers.com/en/xbox/184244/microsoft-xbox-series-x-1tb-black-rrt-00001.html | 2026-11-24 05:29 EST |
-| Xbox Series X 1TB Digital (Robot White) | — | ⛔ Sold out (online + all stores) | Canada Computers — sold out online + all locations | https://www.canadacomputers.com/en/xbox/264257/xbox-series-x-1tb-digital-console-robot-white-ep2-00692.html | 2026-11-24 05:29 EST |
-| Xbox Series S 512GB | — | ⛔ Sold out (online + all stores) | Canada Computers — sold out online + all locations | https://www.canadacomputers.com/en/xbox/184250/microsoft-xbox-series-s-512-gb-all-digital-console-white-rrs-00001.html | 2026-11-24 05:30 EST |
-| Xbox Series S 1TB | — | ⛔ Sold out (online + all stores) | Canada Computers — sold out online + all locations | https://www.canadacomputers.com/en/xbox/264253/microsoft-xbox-series-s-1tb-console-robot-white-ep2-00634.html | 2026-11-24 05:30 EST |
-| PS5 Slim (Disc) | — | ⛔ Sold out (online + all stores) | Canada Computers — sold out online + all locations | https://www.canadacomputers.com/en/playstation/247956/sony-playstation-5-slim-console-1000039655-1000049888.html | 2026-11-24 05:30 EST |
-| PS5 Slim Digital 825GB | — | ⛔ Sold out (online + all stores) | Canada Computers — sold out online + all locations | https://www.canadacomputers.com/en/playstation/247955/sony-playstation-5-slim-console-digital-edition-1000039669-1000049898.html | 2026-11-24 05:30 EST |
-| PS5 Pro | — | ⛔ Sold out (online + all stores) | Canada Computers — sold out online + all locations | https://www.canadacomputers.com/en/playstation/263621/sony-playstation-5-pro-digital-edition-1000046547-1000050805.html | 2026-11-24 05:30 EST |
 
 **How to read it:** a Canada Computers row turns ✅ the moment the store page shows an online or in-store quantity > 0. Toronto Downtown = 312 Yonge St; GTA stores (Markham, etc.) count too.
 

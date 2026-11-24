@@ -29,15 +29,23 @@ EST = datetime.timezone(datetime.timedelta(hours=-5))
 # ---------------------------------------------------------------- console filter
 # A console row must name a console AND must not be a game/accessory/bundle.
 CONSOLE_RE = re.compile(r"(xbox\s+series\s+[xs]\b|playstation\s*5\b|\bps5\b)", re.I)
+# Hardware words: a game can say "PlayStation 5" too, so require a hardware token.
+HARDWARE_RE = re.compile(r"(console|series\s+[xs]|\bdigital\b|\bdisc\b|slim|\bpro\b|1\s?tb|2\s?tb|512\s?gb|825\s?g[bo]|1\s?to)", re.I)
 NON_CONSOLE_RE = re.compile(
     r"(forza|nba\b|nhl\b|fifa|madden|spider-?man|\bgame\b|\bjeu\b|controller|manette|"
     r"headset|casque|charging|\bdock\b|accessor|bundle|\blot\b|skin\b|\bcase\b|\bsteelbook\b)",
     re.I)
 
+def is_in_stock(status: str) -> bool:
+    """Only ✅ rows are listed; out-of-stock/unknown are hidden from the page."""
+    return "\u2705" in (status or "")
+
+
 def is_console(name: str) -> bool:
     """True only for the console itself (not a game, accessory, or bundle)."""
     n = name or ""
-    return bool(CONSOLE_RE.search(n)) and not bool(NON_CONSOLE_RE.search(n))
+    return (bool(CONSOLE_RE.search(n)) and bool(HARDWARE_RE.search(n))
+            and not bool(NON_CONSOLE_RE.search(n)))
 
 def now_est() -> str:
     return datetime.datetime.now(EST).strftime("%Y-%m-%d %H:%M EST")
@@ -270,10 +278,14 @@ PLACEHOLDERS = [
 
 
 def build_site_data(cc_rows, live_rows, stamp):
-    """Emit the single table the Pages site renders."""
+    """Emit the single table the Pages site renders (in-stock listings only)."""
     rows = []
+    hidden = 0
 
     for r in live_rows:
+        if not (is_console(r["name"]) and is_in_stock(r["status"])):
+            hidden += 1
+            continue
         retailer = "Best Buy" if "Best Buy" in r["where"] else "Staples"
         status = "in_stock" if r["status"].startswith("\u2705") else "sold_out"
         seller = ""
@@ -293,8 +305,10 @@ def build_site_data(cc_rows, live_rows, stamp):
                      "checked": r["stamp"], "url": r["link"], "method": "json-api", "owner": "auto"})
 
     for r in cc_rows:
-        st = "in_stock" if r["status"].startswith("\u2705") else (
-            "sold_out" if r["status"].startswith("\u26d4") else "unknown")
+        if not (is_console(r["console"]) and is_in_stock(r["status"])):
+            hidden += 1
+            continue
+        st = "in_stock"
         rows.append({"retailer": "Canada Computers", "product": r["console"], "price": None,
                      "price_text": "-", "status": st,
                      "status_text": r["status"].replace("\u2705 ", "").replace("\u26d4 ", "").replace("\u26a0\ufe0f ", ""),
@@ -302,6 +316,8 @@ def build_site_data(cc_rows, live_rows, stamp):
                      "checked": r["stamp"], "url": r["link"], "method": "page-scrape", "owner": "auto"})
 
     for name, price, seller, kind, url, note in WALMART_OBS:
+        if not is_console(name):
+            continue
         rows.append({"retailer": "Walmart", "product": name, "price": price,
                      "price_text": f"${price:,.2f}", "status": "in_stock",
                      "status_text": "listed", "seller": seller, "kind": kind,
@@ -314,7 +330,7 @@ def build_site_data(cc_rows, live_rows, stamp):
                      "kind": "", "checked": "", "url": "", "method": "", "owner": owner,
                      "note": note})
 
-    return {"generated": stamp, "rows": rows,
+    return {"generated": stamp, "rows": rows, "hidden_out_of_stock": hidden,
             "legend": {"in_stock": "available to buy", "sold_out": "out of stock",
                        "pending": "unclaimed - an agent should fill this", "unknown": "check failed"}}
 
@@ -332,17 +348,24 @@ def build_readme(cc_rows, stamp, live_rows=None):
     a("- All times **EST**. This file is auto-updated by "
       "`.github/workflows/stock-monitor.yml`.\n")
     a(f"_Last auto-check (Canada Computers): **{stamp}**._\n")
-    if live_rows:
-        a("## ✅ LIVE VERIFIED — auto-checked this run (newest first)\n")
+    shown_live = [r for r in (live_rows or []) if is_console(r["name"]) and is_in_stock(r["status"])]
+    shown_cc = [r for r in (cc_rows or []) if is_console(r["console"]) and is_in_stock(r["status"])]
+    shown_amazon = [r for r in AMAZON_ROWS if is_console(r[0]) and is_in_stock(r[2])]
+    hidden = (len(live_rows or []) - len(shown_live)) + (len(cc_rows or []) - len(shown_cc)) + \
+             (len(AMAZON_ROWS) - len(shown_amazon))
+    if live_rows is not None:
+        a("## ✅ IN STOCK NOW — auto-checked this run\n")
+        a(f"_{len(shown_live)} in-stock listing(s) shown; **{hidden} out-of-stock listing(s) hidden** "
+          f"(we only list consoles you can actually buy). Checked {stamp}._\n")
         a(f"_Fetched **{stamp}** from first-party JSON APIs: Best Buy `ecomm-api` and "
           "Staples product-page JSON-LD (`schema.org/OutOfStock`). "
           "`sellerId: bbyca` = Best Buy's own stock, not a marketplace reseller._\n")
         a("| Console | Price | Status | Where | Link | Checked (EST) |")
         a("|---|---|---|---|---|---|")
-        for r in live_rows:
-            if not is_console(r["name"]):
-                continue
-            a(f"| {r['name']} | {r['price']} | {r['status']} | {r['where']} | {r['link']} | {r['stamp']} |")
+        for r in shown_live:
+            a(f"| {r['name']} | {r['price']} | ✅ InStock | {r['where']} | {r['link']} | {r['stamp']} |")
+        if not shown_live:
+            a("| — | — | No in-stock consoles at the auto-checked retailers right now | — | — | — |")
         a("")
     a("## AVAILABLE NOW — user-reported (manual entries, preserved across runs)\n")
     a("> :warning: Reported by a person, not verified by this tracker. Stock changes hourly "
@@ -355,14 +378,12 @@ def build_readme(cc_rows, stamp, live_rows=None):
     a("## Table 1 — VERIFIED\n")
     a("| Console | Price | Status | Where / delivery to downtown (M5G) | Link | Last updated (EST) |")
     a("|---|---|---|---|---|---|")
-    for r in AMAZON_ROWS:
-        if not is_console(r[0]):
-            continue
+    for r in shown_amazon:
         a(f"| {r[0]} | {r[1]} | {r[2]} | {r[3]} | {r[4]} | {r[5]} |")
-    for r in cc_rows:
-        if not is_console(r["console"]):
-            continue
+    for r in shown_cc:
         a(f"| {r['console']} | — | {r['status']} | {r['where']} | {r['link']} | {r['stamp']} |")
+    if not (shown_amazon or shown_cc):
+        a("| — | — | No in-stock consoles found in this snapshot | — | — | — |")
     a("")
     a("**How to read it:** a Canada Computers row turns ✅ the moment the store "
       "page shows an online or in-store quantity > 0. Toronto Downtown = 312 "
@@ -448,7 +469,8 @@ def main():
         have = {r["retailer"] for r in fresh["rows"]}
         carried = []
         for r in prev.get("rows", []):
-            if r.get("retailer") in have or r.get("status") == "pending":
+            if (r.get("retailer") in have
+                    or r.get("status") in ("pending", "sold_out", "unknown")):
                 continue
             r = dict(r)
             r["note"] = ((r.get("note") or "") +
