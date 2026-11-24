@@ -12,7 +12,9 @@ If a page can't be fetched it is marked "check failed" -- never a fake "sold out
 """
 import re
 import sys
+import json
 import datetime
+import urllib.parse
 from pathlib import Path
 
 try:
@@ -104,7 +106,171 @@ AMAZON_ROWS = [
      "Amazon.ca — delivery Nov 26–27", "https://www.amazon.ca/dp/B0CL7NKBBL", "2026-11-20 16:20"),
 ]
 
-def build_readme(cc_rows, stamp):
+
+# ---------------------------------------------------------------- live first-party JSON sources
+# Both of these are real JSON endpoints that answer 200 to a normal client -- they are NOT
+# bot-walled, contrary to what Table 2 used to claim. Verified 2026-11-24.
+BBY_SKUS = [
+    ("Xbox Series S 512GB", "19422130"),
+    ("PS5 Slim 1TB", "19446111"),
+    ("PS5 Slim Disc Edition", "19609594"),
+    ("PS5 Pro 2TB (open box)", "20351327"),
+]
+BBY_API = ("https://www.bestbuy.ca/ecomm-api/availability/products"
+           "?accept-language=en-CA&postalCode=M5G&skus={skus}&quantities=1")
+
+
+def fetch_bestbuy():
+    """Live availability from Best Buy's own JSON API. sellerId=bbyca means first-party stock.
+
+    NOTE: the endpoint rejects a comma-joined `skus` list with HTTP 412
+    ("Invalid query parameter: getProductAvailability.skus"), so each SKU needs its own
+    request. 412 here is a schema error, not an anti-bot block -- do not "fix" it with a browser.
+    """
+    out = []
+    for name, sku in BBY_SKUS:
+        status, body = fetch(BBY_API.format(skus=sku))
+        if not (isinstance(status, int) and status == 200 and body):
+            print(f"[FAIL] bestbuy {sku}: {status}")
+            continue
+        try:
+            data = json.loads(body)
+        except Exception as e:
+            print(f"[FAIL] bestbuy parse {sku}: {e}")
+            continue
+        avail = data.get("availabilities") or []
+        a = avail[0] if avail else None
+        if not a:
+            continue
+        ship = (a.get("shipping") or {}).get("status", "?")
+        pick = (a.get("pickup") or {}).get("status", "?")
+        seller = a.get("sellerId") or "?"
+        ok = ship == "InStock"
+        out.append({"name": name, "price": "—",
+                    "status": ("✅ " if ok else "❌ ") + f"online {ship} · pickup {pick}",
+                    "where": f"Best Buy Canada ({seller})",
+                    "link": f"https://www.bestbuy.ca/en-ca/product/{sku}",
+                    "stamp": now_est()})
+        print(f"[OK] bestbuy {name}: ship={ship} pick={pick} seller={seller}")
+    return out
+
+
+STAPLES_QUERIES = ["playstation 5", "xbox series x"]
+
+
+def fetch_staples():
+    """Staples CA runs on Shopify, so its suggest.json is a public product feed."""
+    out = []
+    for q in STAPLES_QUERIES:
+        params = urllib.parse.urlencode({"q": q, "resources[type]": "product",
+                                        "resources[limit]": "6"})
+        status, body = fetch(f"https://www.staples.ca/search/suggest.json?{params}")
+        if not (isinstance(status, int) and status == 200 and body):
+            print(f"[FAIL] staples {q}: {status}")
+            continue
+        try:
+            prods = (json.loads(body).get("resources", {}).get("results", {})
+                     .get("products", []))
+        except Exception as e:
+            print(f"[FAIL] staples parse {q}: {e}")
+            continue
+        for p in prods:
+            price = p.get("price")
+            avail = str(p.get("available", "")).strip().lower()
+            ok = avail not in ("", "0", "false")
+            url = p.get("url") or ""
+            out.append({"name": str(p.get("title", ""))[:90],
+                        "price": f"${price}" if price else "—",
+                        "status": ("✅ " if ok else "❌ ") + ("available online" if ok else "unavailable"),
+                        "where": "Staples Canada",
+                        "link": ("https://www.staples.ca" + url) if url.startswith("/") else url,
+                        "stamp": now_est()})
+        print(f"[OK] staples {q}: {len(prods)} products")
+    return out
+
+
+
+
+# ---------------------------------------------------------------- GitHub Pages data feed
+# One JSON file drives the filterable table. Other agents append rows here; `owner` says who
+# owns the row so parallel work never silently overwrites a source.
+WALMART_OBS = [
+    ("PlayStation 5 Digital Edition - 825 GB", 1899.00, "BuySmart", "marketplace",
+     "https://www.walmart.ca/en/search?q=playstation+5",
+     "Observed 2026-11-24 via headful real Chrome. Marketplace reseller, not first-party."),
+    ("PlayStation 5 Pro Console", 2849.99, "always innovating", "marketplace",
+     "https://www.walmart.ca/en/search?q=playstation+5",
+     "Observed 2026-11-24 via headful real Chrome. Marketplace reseller, not first-party."),
+    ("Saros (PlayStation 5)", 49.96, "Walmart.ca", "first-party",
+     "https://www.walmart.ca/en/search?q=playstation+5",
+     "Observed 2026-11-24 via headful real Chrome."),
+]
+
+PLACEHOLDERS = [
+    ("GameStop / EB Games", "PS5 + Xbox store stock (267 Yonge St)", "agent: gamestop",
+     "gamestop.ca does not resolve from automation; needs manual or in-store check"),
+    ("Memory Express", "PS5 + Xbox online stock", "agent: memexpress",
+     "search API returns 403 under curl_cffi, Playwright, nodriver and patchright - needs a data-endpoint hunt"),
+    ("Amazon.ca", "PS5 / Xbox listing status", "agent: amazon",
+     "HTML answers 200 to plain curl; needs the product-level parse wired in"),
+    ("Canada Computers (in-store)", "Per-store shelf counts", "auto: cc",
+     "covered by Table 1 above; this row is the site placeholder for store-level depth"),
+    ("Local shops (Gamerama, Queen East, ReserveRoom, Buy & Sell Kings)", "Phone-verified shelf stock", "agent: local",
+     "phone verify only"),
+]
+
+
+def build_site_data(cc_rows, live_rows, stamp):
+    """Emit the single table the Pages site renders."""
+    rows = []
+
+    for r in live_rows:
+        retailer = "Best Buy" if "Best Buy" in r["where"] else "Staples"
+        status = "in_stock" if r["status"].startswith("\u2705") else "sold_out"
+        seller = ""
+        if "(" in r["where"] and ")" in r["where"]:
+            seller = r["where"].split("(", 1)[1].rstrip(")")
+        price = None
+        pt = str(r["price"]).replace("$", "").replace(",", "").strip()
+        try:
+            price = float(pt)
+        except Exception:
+            price = None
+        rows.append({"retailer": retailer, "product": r["name"], "price": price,
+                     "price_text": r["price"], "status": status,
+                     "status_text": r["status"].replace("\u2705 ", "").replace("\u274c ", ""),
+                     "seller": seller or retailer,
+                     "kind": "first-party" if seller in ("", "bbyca", "Staples Canada") else "marketplace",
+                     "checked": r["stamp"], "url": r["link"], "method": "json-api", "owner": "auto"})
+
+    for r in cc_rows:
+        st = "in_stock" if r["status"].startswith("\u2705") else (
+            "sold_out" if r["status"].startswith("\u26d4") else "unknown")
+        rows.append({"retailer": "Canada Computers", "product": r["console"], "price": None,
+                     "price_text": "-", "status": st,
+                     "status_text": r["status"].replace("\u2705 ", "").replace("\u26d4 ", "").replace("\u26a0\ufe0f ", ""),
+                     "seller": "Canada Computers", "kind": "first-party",
+                     "checked": r["stamp"], "url": r["link"], "method": "page-scrape", "owner": "auto"})
+
+    for name, price, seller, kind, url, note in WALMART_OBS:
+        rows.append({"retailer": "Walmart", "product": name, "price": price,
+                     "price_text": f"${price:,.2f}", "status": "in_stock",
+                     "status_text": "listed", "seller": seller, "kind": kind,
+                     "checked": "2026-11-24 09:00 EST", "url": url,
+                     "method": "headful-chrome", "owner": "hermes", "note": note})
+
+    for retailer, product, owner, note in PLACEHOLDERS:
+        rows.append({"retailer": retailer, "product": product, "price": None, "price_text": "-",
+                     "status": "pending", "status_text": "PENDING", "seller": "",
+                     "kind": "", "checked": "", "url": "", "method": "", "owner": owner,
+                     "note": note})
+
+    return {"generated": stamp, "rows": rows,
+            "legend": {"in_stock": "available to buy", "sold_out": "out of stock",
+                       "pending": "unclaimed - an agent should fill this", "unknown": "check failed"}}
+
+
+def build_readme(cc_rows, stamp, live_rows=None):
     lines = []
     a = lines.append
     a("# GTA Toronto Console Tracker\n")
@@ -117,6 +283,24 @@ def build_readme(cc_rows, stamp):
     a("- All times **EST**. This file is auto-updated by "
       "`.github/workflows/stock-monitor.yml`.\n")
     a(f"_Last auto-check (Canada Computers): **{stamp}**._\n")
+    if live_rows:
+        a("## ✅ LIVE VERIFIED — auto-checked this run (newest first)\n")
+        a(f"_Fetched **{stamp}** from first-party JSON APIs: Best Buy `ecomm-api` and "
+          "Staples Shopify `suggest.json`. Real API responses, not scraping guesses. "
+          "`sellerId: bbyca` = Best Buy's own stock, not a marketplace reseller._\n")
+        a("| Console | Price | Status | Where | Link | Checked (EST) |")
+        a("|---|---|---|---|---|---|")
+        for r in live_rows:
+            a(f"| {r['name']} | {r['price']} | {r['status']} | {r['where']} | {r['link']} | {r['stamp']} |")
+        a("")
+    a("## AVAILABLE NOW — user-reported (manual entries, preserved across runs)\n")
+    a("> :warning: Reported by a person, not verified by this tracker. Stock changes hourly "
+      "— confirm on the page before buying.\n")
+    a("| Item | Status | Link |")
+    a("|---|---|---|")
+    a("| PlayStation 5 Slim Disc Edition | Reported available online | https://www.bestbuy.ca/en-ca/product/playstation-5-disc-edition-console-slim/19609594 |")
+    a("| PlayStation 5 Pro 2TB SSD | Reported available — **open box** (check condition grade + warranty) | https://www.bestbuy.ca/en-ca/product/playstation-5-pro-console-with-2tb-ssd-ai-enhanced-4k-resolution-playstation-spectral-super-resolution-open-box/20351327 |")
+    a("")
     a("## Table 1 — VERIFIED\n")
     a("| Console | Price | Status | Where / delivery to downtown (M5G) | Link | Last updated (EST) |")
     a("|---|---|---|---|---|---|")
@@ -131,11 +315,11 @@ def build_readme(cc_rows, stamp):
     a("## Table 2 — UNVERIFIED (site blocks bots — manual check required)\n")
     a("| Retailer / Store | What to check | Why unverified | Link / phone | Last checked (EST) |")
     a("|---|---|---|---|---|")
-    a("| Best Buy Canada | Xbox Series S in stock online (API); Series X & PS5 sold out online | Akamai \"Access Denied\" to bots | https://www.bestbuy.ca/en-ca/product/xbox-series-s-512gb-console/19422130 | 2026-11-20 16:00 |")
-    a("| Best Buy Canada | PS5 Slim / Series X | Akamai block | https://www.bestbuy.ca/en-ca/product/playstation-5-slim-1tb-console/19446111 | 2026-11-20 16:00 |")
+    a("| Best Buy Canada | **NOW AUTO-VERIFIED** — see LIVE VERIFIED above | HTML is Akamai-walled, but the `ecomm-api` JSON endpoint answers 200 (verified 2026-11-24) | https://www.bestbuy.ca/en-ca/product/xbox-series-s-512gb-console/19422130 | auto |")
+    a("| Best Buy Canada | PS5 Slim 1TB | `ecomm-api` reports online status directly | https://www.bestbuy.ca/en-ca/product/playstation-5-slim-1tb-console/19446111 | auto |")
     a("| EB Games / GameStop (267 Yonge St) | PS5 / Xbox store stock | Cloudflare; gamestop.ca does not resolve | https://www.ebgames.ca/ | 2026-11-20 16:00 |")
-    a("| Walmart Canada | Consoles | \"Forbidden\" bot block | https://www.walmart.ca/en/search?q=playstation+5 | 2026-11-20 16:00 |")
-    a("| Staples | Consoles | Cloudflare challenge | https://www.staples.ca/search?query=playstation+5 | 2026-11-20 16:00 |")
+    a("| Walmart Canada | Consoles — **marketplace resellers list PS5 at $1899+ (seller BuySmart) vs $1099.99 first-party elsewhere**. Do not buy without checking the seller field | plain HTTP + every known JSON API 403s; a headful real Chrome does load search results, but prices are mostly reseller markup | https://www.walmart.ca/en/search?q=playstation+5 | 2026-11-24 09:00 |")
+    a("| Staples | **NOW AUTO-VERIFIED** — see LIVE VERIFIED above | Site is Shopify; `search/suggest.json` returns clean product JSON (verified 2026-11-24) | https://www.staples.ca/search?query=playstation+5 | auto |")
     a("| Memory Express | Consoles | Cloudflare challenge | https://www.memoryexpress.com/ | 2026-11-20 16:00 |")
     a("| Gamerama (local) | Xbox/PS5 shelf stock | Phone verify | 2470 Yonge St — 416-487-8802 | 2026-11-20 16:00 |")
     a("| Queen East Appliance Centre (local) | Consoles | Phone verify | 1180 Queen St E — 416-463-6551 | 2026-11-20 16:00 |")
@@ -179,7 +363,29 @@ def main():
                      "link": url, "stamp": now_est()})
 
     stamp = now_est()
-    readme = build_readme(rows, stamp)
+
+    # Live first-party JSON sources. Wrapped so a dead endpoint can never break the
+    # Canada Computers path or block the commit.
+    live_rows = []
+    for fn in (fetch_bestbuy, fetch_staples):
+        try:
+            live_rows += fn()
+        except Exception as e:
+            print(f"[FAIL] {fn.__name__}: {e}")
+
+    readme = build_readme(rows, stamp, live_rows)
+
+    # Pages data feed -- best effort, never blocks the README commit
+    try:
+        import os
+        site_dir = Path(__file__).resolve().parent.parent / "docs"
+        site_dir.mkdir(exist_ok=True)
+        (site_dir / "data.json").write_text(
+            json.dumps(build_site_data(rows, live_rows, stamp), indent=1, ensure_ascii=False),
+            encoding="utf-8")
+        print(f"Wrote {site_dir / 'data.json'}")
+    except Exception as e:
+        print(f"[FAIL] site data: {e}")
     out = Path(__file__).resolve().parent.parent / "README.md"
     out.write_text(readme, encoding="utf-8")
     print(f"\nWrote {out}")

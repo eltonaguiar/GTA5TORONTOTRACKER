@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GTA Console Tracker — verified stock</title>
+<style>
+  :root{
+    --bg:#0f1115; --card:#161a21; --line:#252b36; --txt:#e8ecf3; --mute:#98a3b3;
+    --ok:#2ecc71; --bad:#e74c3c; --wait:#f0b429; --warn:#e67e22; --accent:#4da3ff;
+  }
+  @media (prefers-color-scheme: light){
+    :root{--bg:#f6f8fb;--card:#fff;--line:#e2e8f0;--txt:#131720;--mute:#5b6676;}
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);
+       font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
+  .wrap{max-width:1180px;margin:0 auto;padding:28px 20px 60px}
+  h1{font-size:1.55rem;margin:0 0 4px;letter-spacing:-.02em}
+  .sub{color:var(--mute);font-size:.9rem;margin-bottom:18px}
+  .stats{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:10px;
+        padding:10px 16px;min-width:104px}
+  .stat b{display:block;font-size:1.35rem;line-height:1.2}
+  .stat span{color:var(--mute);font-size:.75rem;text-transform:uppercase;letter-spacing:.06em}
+  .controls{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+  input[type=search],select{background:var(--card);color:var(--txt);border:1px solid var(--line);
+        border-radius:8px;padding:9px 12px;font-size:.9rem;min-width:150px}
+  input[type=search]{flex:1;min-width:220px}
+  input[type=search]:focus,select:focus{outline:2px solid var(--accent);outline-offset:-1px}
+  .chk{display:flex;align-items:center;gap:7px;color:var(--mute);font-size:.88rem;
+       background:var(--card);border:1px solid var(--line);border-radius:8px;padding:9px 12px;cursor:pointer}
+  table{width:100%;border-collapse:collapse;background:var(--card);
+        border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:.9rem}
+  thead th{position:sticky;top:0;background:var(--card);text-align:left;padding:11px 12px;
+        border-bottom:1px solid var(--line);color:var(--mute);font-size:.74rem;
+        text-transform:uppercase;letter-spacing:.06em;cursor:pointer;white-space:nowrap;
+        user-select:none}
+  thead th:hover{color:var(--txt)}
+  thead th .ar{opacity:.45;font-size:.8em}
+  tbody td{padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:hover{background:rgba(77,163,255,.06)}
+  .prod{font-weight:550}
+  .note{color:var(--mute);font-size:.78rem;margin-top:3px;display:block}
+  .price{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:600}
+  .price.hot{color:var(--warn)}
+  .badge{display:inline-block;padding:2px 9px;border-radius:99px;font-size:.74rem;
+         font-weight:600;white-space:nowrap}
+  .b-ok{background:rgba(46,204,113,.16);color:var(--ok)}
+  .b-bad{background:rgba(231,76,60,.16);color:var(--bad)}
+  .b-wait{background:rgba(240,180,41,.16);color:var(--wait)}
+  .b-unk{background:rgba(152,163,179,.16);color:var(--mute)}
+  .kind{font-size:.74rem;color:var(--mute)}
+  .kind.mkt{color:var(--warn);font-weight:600}
+  tr.pending td{opacity:.72}
+  tr.pending .prod::after{content:" · unclaimed";color:var(--mute);font-weight:400;font-size:.8em}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .foot{margin-top:16px;color:var(--mute);font-size:.8rem;line-height:1.7}
+  .empty{padding:26px;text-align:center;color:var(--mute)}
+  @media (max-width:760px){
+    thead{display:none}
+    table,tbody,tr,td{display:block;width:100%}
+    tr{border-bottom:1px solid var(--line);padding:8px 0}
+    td{border:none;padding:4px 12px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>GTA Console Tracker — verified stock</h1>
+  <div class="sub">Xbox Series X/S and PlayStation 5 · downtown Toronto / GTA (M5G) ·
+    <span id="gen">loading…</span></div>
+
+  <div class="stats" id="stats"></div>
+
+  <div class="controls">
+    <input type="search" id="q" placeholder="Search product, retailer, seller…">
+    <select id="fRetailer"><option value="">All retailers</option></select>
+    <select id="fStatus">
+      <option value="">Any status</option>
+      <option value="in_stock">In stock</option>
+      <option value="sold_out">Sold out</option>
+      <option value="pending">Pending (agent slot)</option>
+      <option value="unknown">Check failed</option>
+    </select>
+    <select id="fKind">
+      <option value="">Any seller type</option>
+      <option value="first-party">First-party only</option>
+      <option value="marketplace">Marketplace only</option>
+    </select>
+    <label class="chk"><input type="checkbox" id="hideOut"> Hide sold out</label>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th data-k="retailer">Retailer <span class="ar">↕</span></th>
+        <th data-k="product">Product <span class="ar">↕</span></th>
+        <th data-k="price">Price <span class="ar">↕</span></th>
+        <th data-k="status">Status <span class="ar">↕</span></th>
+        <th data-k="seller">Seller <span class="ar">↕</span></th>
+        <th data-k="kind">Type <span class="ar">↕</span></th>
+        <th data-k="checked">Checked <span class="ar">↕</span></th>
+        <th data-k="method">Method <span class="ar">↕</span></th>
+      </tr>
+    </thead>
+    <tbody id="tb"><tr><td colspan="8" class="empty">Loading data.json…</td></tr></tbody>
+  </table>
+
+  <div class="foot" id="foot"></div>
+</div>
+
+<script>
+const S = {rows:[], sortKey:'status', dir:1, q:'', retailer:'', status:'', kind:'', hideOut:false};
+const RANK = {in_stock:0, pending:1, unknown:2, sold_out:3};
+const LABEL = {in_stock:['In stock','b-ok'], sold_out:['Sold out','b-bad'],
+               pending:['PENDING','b-wait'], unknown:['Check failed','b-unk']};
+
+const el = id => document.getElementById(id);
+const esc = s => String(s==null?'':s).replace(/[&<>"']/g, c =>
+  ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+function priceRank(r){
+  if (r.price == null) return Number.POSITIVE_INFINITY;
+  return r.price;
+}
+
+function apply(){
+  let rows = S.rows.filter(r => {
+    if (S.retailer && r.retailer !== S.retailer) return false;
+    if (S.status && r.status !== S.status) return false;
+    if (S.kind && r.kind !== S.kind) return false;
+    if (S.hideOut && r.status === 'sold_out') return false;
+    if (S.q){
+      const hay = (r.retailer+' '+r.product+' '+r.seller+' '+(r.note||'')).toLowerCase();
+      if (!hay.includes(S.q)) return false;
+    }
+    return true;
+  });
+
+  const k = S.sortKey;
+  rows.sort((a,b) => {
+    if (k === 'status'){
+      const d = (RANK[a.status]??9) - (RANK[b.status]??9);
+      if (d) return d * S.dir;
+      return priceRank(a) - priceRank(b);
+    }
+    if (k === 'price'){
+      const d = priceRank(a) - priceRank(b);
+      return (d || a.retailer.localeCompare(b.retailer)) * S.dir;
+    }
+    const av = String(a[k]||''), bv = String(b[k]||'');
+    return av.localeCompare(bv) * S.dir;
+  });
+
+  el('tb').innerHTML = rows.length ? rows.map(r => {
+    const [lab, cls] = LABEL[r.status] || LABEL.unknown;
+    const hot = (r.price != null && r.price >= 1500) ? ' hot' : '';
+    const mkt = r.kind === 'marketplace' ? ' mkt' : '';
+    return `<tr class="${r.status==='pending'?'pending':''}">
+      <td>${esc(r.retailer)}</td>
+      <td><span class="prod">${r.url
+          ? `<a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.product)}</a>`
+          : esc(r.product)}</span>
+        ${r.note?`<span class="note">${esc(r.note)}</span>`:''}</td>
+      <td class="price${hot}">${esc(r.price_text||'-')}</td>
+      <td><span class="badge ${cls}">${esc(lab)}</span></td>
+      <td>${esc(r.seller||'—')}</td>
+      <td class="kind${mkt}">${esc(r.kind||'—')}</td>
+      <td>${esc(r.checked||'—')}</td>
+      <td>${esc(r.method||'—')}</td>
+    </tr>`;
+  }).join('') : '<tr><td colspan="8" class="empty">No rows match these filters.</td></tr>';
+
+  const c = {in_stock:0, sold_out:0, pending:0};
+  S.rows.forEach(r => { if (r.status in c) c[r.status]++; });
+  el('stats').innerHTML = `
+    <div class="stat"><b style="color:var(--ok)">${c.in_stock}</b><span>in stock</span></div>
+    <div class="stat"><b style="color:var(--bad)">${c.sold_out}</b><span>sold out</span></div>
+    <div class="stat"><b style="color:var(--wait)">${c.pending}</b><span>agent slots</span></div>
+    <div class="stat"><b>${rows.length}</b><span>showing</span></div>`;
+}
+
+fetch('data.json', {cache:'no-store'})
+  .then(r => r.ok ? r.json() : Promise.reject(r.status))
+  .then(d => {
+    S.rows = d.rows || [];
+    el('gen').textContent = 'data generated ' + (d.generated || 'unknown');
+    const rets = [...new Set(S.rows.map(r => r.retailer))].sort();
+    rets.forEach(x => el('fRetailer').add(new Option(x, x)));
+    el('foot').innerHTML =
+      'Prices in CAD. <b>First-party</b> = sold by the retailer itself. ' +
+      '<b>Marketplace</b> = third-party reseller — one Walmart listing is a reseller at ' +
+      '$1,899 for the same console Staples sells for $749.99 first-party, so always check the seller. ' +
+      'Rows marked <b>PENDING</b> are unclaimed slots other agents can fill. ' +
+      'Auto-generated by <code>scripts/check_stock.py</code> → <code>docs/data.json</code>.';
+    apply();
+  })
+  .catch(e => {
+    el('tb').innerHTML = `<tr><td colspan="8" class="empty">
+      Could not load data.json (${esc(e)}). Run <code>python scripts/check_stock.py</code> first.</td></tr>`;
+  });
+
+el('q').addEventListener('input', e => { S.q = e.target.value.toLowerCase().trim(); apply(); });
+el('fRetailer').addEventListener('change', e => { S.retailer = e.target.value; apply(); });
+el('fStatus').addEventListener('change', e => { S.status = e.target.value; apply(); });
+el('fKind').addEventListener('change', e => { S.kind = e.target.value; apply(); });
+el('hideOut').addEventListener('change', e => { S.hideOut = e.target.checked; apply(); });
+
+document.querySelectorAll('thead th').forEach(th => {
+  th.addEventListener('click', () => {
+    const k = th.dataset.k;
+    if (S.sortKey === k) S.dir *= -1; else { S.sortKey = k; S.dir = 1; }
+    document.querySelectorAll('thead th .ar').forEach(a => a.textContent = '↕');
+    th.querySelector('.ar').textContent = S.dir === 1 ? '↑' : '↓';
+    apply();
+  });
+});
+</script>
+</body>
+</html>
