@@ -1,0 +1,35 @@
+{
+ "tool": "curl_cffi",
+ "version": "0.16.3",
+ "impersonate": "chrome",
+ "target": "https://www.gta5-mods.com/",
+ "fetched_at_utc": "2026-11-24T10:11:38Z",
+ "status": 200,
+ "elapsed_s": 0.21,
+ "bytes": 53936,
+ "title": "GTA5-Mods.com - Your source for the latest GTA 5 car mods, scripts, tools and more.",
+ "h1": [
+  "Welcome to GTA5-Mods.com"
+ ],
+ "n_links": 131,
+ "sample_links": [
+  "/",
+  "#language",
+  "/id/",
+  "/ms/",
+  "/bg/",
+  "/ca/",
+  "/cs/",
+  "/da/",
+  "/de/",
+  "/el/",
+  "/",
+  "/es/",
+  "/fr/",
+  "/gl/",
+  "/ko/"
+ ],
+ "parser": "bs4",
+ "python": "3.12.3",
+ "success": true
+}
