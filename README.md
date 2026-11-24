@@ -6,26 +6,21 @@ In-stock check for **Xbox Series X / S** and **PlayStation 5** for **downtown To
 - **Unverified** rows = retailer blocks automated browsers → a human must confirm (link/phone given).
 - All times **EST**. This file is auto-updated by `.github/workflows/stock-monitor.yml`.
 
-_Last auto-check (Canada Computers): **2026-11-24 05:31 EST**._
+_Last auto-check (Canada Computers): **2026-11-24 05:32 EST**._
 
 ## ✅ IN STOCK NOW — auto-checked this run
 
-_1 in-stock listing(s) shown; **16 out-of-stock listing(s) hidden** (we only list consoles you can actually buy). Checked 2026-11-24 05:31 EST._
+_1 in-stock listing(s) shown; **16 out-of-stock listing(s) hidden** (we only list consoles you can actually buy). Checked 2026-11-24 05:32 EST._
 
-_Fetched **2026-11-24 05:31 EST** from first-party JSON APIs: Best Buy `ecomm-api` and Staples product-page JSON-LD (`schema.org/OutOfStock`). `sellerId: bbyca` = Best Buy's own stock, not a marketplace reseller._
+_Fetched **2026-11-24 05:32 EST** from first-party JSON APIs: Best Buy `ecomm-api` and Staples product-page JSON-LD (`schema.org/OutOfStock`). `sellerId: bbyca` = Best Buy's own stock, not a marketplace reseller._
 
 | Console | Price | Status | Where | Link | Checked (EST) |
 |---|---|---|---|---|---|
-| Xbox Series S 512GB | — | ✅ InStock | Best Buy Canada (bbyca) | https://www.bestbuy.ca/en-ca/product/19422130 | 2026-11-24 05:31 EST |
+| Xbox Series S 512GB | — | ✅ InStock | Best Buy Canada (bbyca) | https://www.bestbuy.ca/en-ca/product/19422130 | 2026-11-24 05:32 EST |
 
-## AVAILABLE NOW — user-reported (manual entries, preserved across runs)
+## AVAILABLE NOW — user-reported, API-confirmed this run
 
-> :warning: Reported by a person, not verified by this tracker. Stock changes hourly — confirm on the page before buying.
-
-| Item | Status | Link |
-|---|---|---|
-| PlayStation 5 Slim Disc Edition | Reported available online | https://www.bestbuy.ca/en-ca/product/playstation-5-disc-edition-console-slim/19609594 |
-| PlayStation 5 Pro 2TB SSD | Reported available — **open box** (check condition grade + warranty) | https://www.bestbuy.ca/en-ca/product/playstation-5-pro-console-with-2tb-ssd-ai-enhanced-4k-resolution-playstation-spectral-super-resolution-open-box/20351327 |
+_None: the user-reported PS5 listings are currently **SoldOutOnline** in the Best Buy API, so they are hidden._
 
 ## Table 1 — VERIFIED
 

@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-24 05:31 EST",
+ "generated": "2026-11-24 05:32 EST",
  "rows": [
   {
    "retailer": "Best Buy",
@@ -10,7 +10,7 @@
    "status_text": "online InStock · pickup NotAvailable",
    "seller": "bbyca",
    "kind": "first-party",
-   "checked": "2026-11-24 05:31 EST",
+   "checked": "2026-11-24 05:32 EST",
    "url": "https://www.bestbuy.ca/en-ca/product/19422130",
    "method": "json-api",
    "owner": "auto"

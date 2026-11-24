@@ -367,13 +367,26 @@ def build_readme(cc_rows, stamp, live_rows=None):
         if not shown_live:
             a("| — | — | No in-stock consoles at the auto-checked retailers right now | — | — | — |")
         a("")
-    a("## AVAILABLE NOW — user-reported (manual entries, preserved across runs)\n")
-    a("> :warning: Reported by a person, not verified by this tracker. Stock changes hourly "
-      "— confirm on the page before buying.\n")
-    a("| Item | Status | Link |")
-    a("|---|---|---|")
-    a("| PlayStation 5 Slim Disc Edition | Reported available online | https://www.bestbuy.ca/en-ca/product/playstation-5-disc-edition-console-slim/19609594 |")
-    a("| PlayStation 5 Pro 2TB SSD | Reported available — **open box** (check condition grade + warranty) | https://www.bestbuy.ca/en-ca/product/playstation-5-pro-console-with-2tb-ssd-ai-enhanced-4k-resolution-playstation-spectral-super-resolution-open-box/20351327 |")
+    # User-reported entries are shown ONLY if the same SKU is InStock in this run.
+    _live_skus = set()
+    for r in shown_live:
+        _live_skus.update(re.findall(r"/product/(\d+)", r["link"]))
+    _reported = [
+        ("PlayStation 5 Slim Disc Edition", "19609594",
+         "https://www.bestbuy.ca/en-ca/product/playstation-5-disc-edition-console-slim/19609594"),
+        ("PlayStation 5 Pro 2TB SSD (open box)", "20351327",
+         "https://www.bestbuy.ca/en-ca/product/playstation-5-pro-console-with-2tb-ssd-ai-enhanced-4k-resolution-playstation-spectral-super-resolution-open-box/20351327"),
+    ]
+    _keep = [x for x in _reported if x[1] in _live_skus]
+    a("## AVAILABLE NOW — user-reported, API-confirmed this run\n")
+    if _keep:
+        a("| Item | Status | Link |")
+        a("|---|---|---|")
+        for _name, _sku, _link in _keep:
+            a(f"| {_name} | ✅ API says InStock | {_link} |")
+    else:
+        a("_None: the user-reported PS5 listings are currently **SoldOutOnline** in the "
+          "Best Buy API, so they are hidden._")
     a("")
     a("## Table 1 — VERIFIED\n")
     a("| Console | Price | Status | Where / delivery to downtown (M5G) | Link | Last updated (EST) |")
