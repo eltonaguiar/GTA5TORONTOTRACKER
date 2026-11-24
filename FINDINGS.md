@@ -50,3 +50,69 @@ availability API was queried instead of trusting keywords.
   stock right now.
 - A page saying "in stock" is worthless without a SKU: the Best Buy Xbox landing
   page mixes a $649.99 console with $1,149.99 bundles.
+
+---
+
+## chrome-devtools-mcp — evaluated 2026-11-24
+
+**What it is.** `chrome-devtools-mcp` v1.13.0, the Chrome DevTools team's official
+MCP server (npm, ~29 tools). Under the hood it is **Puppeteer driving the Chrome
+DevTools Protocol** — the same transport this tracker already uses.
+
+**Tested, not assumed:**
+
+| Check | Result |
+|---|---|
+| `npm view chrome-devtools-mcp version` | `1.13.0` |
+| `npx -y chrome-devtools-mcp@latest --help` | runs; flags confirmed |
+| Connection modes | `--browserUrl http://127.0.0.1:9222`, `--wsEndpoint`, `--autoConnect` |
+| Profile isolation | `--isolated` (temp dir, auto-cleaned), `--userDataDir`, `--channel`, `--executablePath` |
+| Tool trimming | `--categoryInput/Navigation/Emulation/Network/...` booleans |
+| Other | `--headless`, `--proxyServer`, `--chromeArg` |
+
+**Verdict — it is a transport, not a bypass.** It launches or attaches to a *real*
+Chrome, which is exactly what a Playwright/CDP scrape already does. Best Buy returned
+`🐴 Access Denied` (Akamai) through a real Chrome today, so no MCP layer changes that.
+
+What it genuinely adds, and why it is still worth having:
+
+1. **A standard tool surface** — navigate, click, type, read DOM, read network, run a
+   performance trace — so an agent scrapes without hand-writing CDP plumbing per site.
+2. **Network interception and mocking**, which is how you read a retailer's own
+   availability XHR instead of parsing rendered HTML (the fragile part).
+3. **`--isolated`** profiles, so scraping never touches the user's logged-in Chrome.
+4. **`--category*` flags** to cut the tool list down to navigation + network only.
+
+Where it does **not** help: Akamai/Cloudflare walls, IP reputation, or JS challenges.
+For those the honest answer stays the same — use the retailer's own JSON/HTML where it
+is open, and mark the rest manual.
+
+## Fresh check — 2026-11-24 03:53–03:59 EST
+
+| Source | Method | Result |
+|---|---|---|
+| Canada Computers, 7 console SKUs | static HTML, per-store table, **40 stores parsed per SKU** | **All zero.** Toronto Downtown (312 Yonge) qty=0 and every other store qty=0 for Series X 1TB, Series X 1TB Digital RW, Series S 512GB, Series S 1TB, PS5 Slim Disc, PS5 Slim Digital 825GB, PS5 Pro |
+| Best Buy API @ M5G 1L7 | `ecomm-api/availability` | **Series S 512GB `InStock qty=105`.** Every other console `SoldOutOnline qty=0` (Series X 1TB Digital RW, PS5 Slim Digital, PS5 Slim 1TB, PS5 Pro, PS5 Slim 1TB Refurb) |
+| Best Buy product page | real browser | `🐴 Access Denied` — Akamai. API is a lead here, not proof |
+| Amazon.ca Series S 512GB (B0FLL9VRL5) | real browser | ✅ **"In Stock"**, add-to-cart present, $649.96, FREE delivery Nov 28 / fastest **Nov 25** |
+| Amazon.ca Series X 1TB (B0BMXVWSD6) | real browser | ⚠️ "Only 2 left in stock" at **$1,299.50 sold by `CCJamesInc`** — third-party marketplace markup, no visible add-to-cart. **Not a retail find.** |
+| Amazon.ca PS5 Disc (B0BCSYVXGL) | real browser | ⚠️ "Only 1 left in stock", no price, no add-to-cart — unconfirmed |
+| Amazon.ca PS5 B0FRGMYJMG / B0CL7RQRY9 / B0CL7NKBBL | real browser | ⛔ Dead listings: $129.98 / $229.99 (not console prices), availability block empty |
+
+### Lesson
+
+Two failure modes to keep watching for:
+
+1. **ASIN and SKU drift.** A console's old ASIN becomes a dead listing that still
+   renders a title and a nonsense price (`$129.98` for a PS5). Price sanity-check
+   against MSRP is what catches it.
+2. **A low price with no availability block and no add-to-cart is a dead page**, not
+   a bargain — and a high price with "only N left" is usually a marketplace reseller.
+   `soldBy` is the tie-breaker: `CCJamesInc` at $1,299.50 is not a retail restock.
+
+### The one live signal
+
+Best Buy's Series S 512GB quantity is the only corroborated inventory in this tracker,
+and it is draining: **587 → 577** (2026-11-20) → **105** (2026-11-24). Amazon
+independently shows the same console in stock with next-day delivery, which is the
+first two-source agreement on a buyable console since this tracker started.
