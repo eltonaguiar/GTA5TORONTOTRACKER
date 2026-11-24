@@ -1,0 +1,82 @@
+[
+  {
+    "repo": "daijro/camoufox",
+    "license": "MPL-2.0",
+    "stars": 13612,
+    "pushed_at": "2026-11-22",
+    "archived": false,
+    "url": "https://github.com/daijro/camoufox"
+  },
+  {
+    "repo": "CloakHQ/CloakBrowser",
+    "license": "MIT",
+    "stars": 33046,
+    "pushed_at": "2026-11-22",
+    "archived": false,
+    "url": "https://github.com/CloakHQ/CloakBrowser"
+  },
+  {
+    "repo": "Kaliiiiiiiiii-Vinyzu/patchright",
+    "license": "Apache-2.0",
+    "stars": 5241,
+    "pushed_at": "2026-11-13",
+    "archived": false,
+    "url": "https://github.com/Kaliiiiiiiiii-Vinyzu/patchright"
+  },
+  {
+    "repo": "ultrafunkamsterdam/nodriver",
+    "license": "AGPL-3.0",
+    "stars": 4960,
+    "pushed_at": "2026-10-26",
+    "archived": false,
+    "url": "https://github.com/ultrafunkamsterdam/nodriver"
+  },
+  {
+    "repo": "seleniumbase/SeleniumBase",
+    "license": "MIT",
+    "stars": 13280,
+    "pushed_at": "2026-11-24",
+    "archived": false,
+    "url": "https://github.com/seleniumbase/SeleniumBase"
+  },
+  {
+    "repo": "omkarcloud/botasaurus",
+    "license": "MIT",
+    "stars": 5865,
+    "pushed_at": "2026-11-13",
+    "archived": false,
+    "url": "https://github.com/omkarcloud/botasaurus"
+  },
+  {
+    "repo": "lexiforest/curl_cffi",
+    "license": "MIT",
+    "stars": 6918,
+    "pushed_at": "2026-11-23",
+    "archived": false,
+    "url": "https://github.com/lexiforest/curl_cffi"
+  },
+  {
+    "repo": "D4Vinci/Scrapling",
+    "license": "BSD-3-Clause",
+    "stars": 105415,
+    "pushed_at": "2026-11-23",
+    "archived": false,
+    "url": "https://github.com/D4Vinci/Scrapling"
+  },
+  {
+    "repo": "browser-use/browser-use",
+    "license": "MIT",
+    "stars": 121904,
+    "pushed_at": "2026-11-24",
+    "archived": false,
+    "url": "https://github.com/browser-use/browser-use"
+  },
+  {
+    "repo": "Skyvern-AI/skyvern",
+    "license": "AGPL-3.0",
+    "stars": 23502,
+    "pushed_at": "2026-11-24",
+    "archived": false,
+    "url": "https://github.com/Skyvern-AI/skyvern"
+  }
+]
