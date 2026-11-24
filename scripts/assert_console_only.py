@@ -11,6 +11,9 @@ import re
 import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from check_stock import is_console  # single source of truth
+
 CONSOLE_RE = re.compile(r"(xbox\s+series\s+[xs]\b|playstation\s*5\b|\bps5\b)", re.I)
 HARDWARE_RE = re.compile(r"(console|series\s+[xs]|\bdigital\b|\bdisc\b|slim|\bpro\b|1\s?tb|2\s?tb|512\s?gb|825\s?g[bo]|1\s?to)", re.I)
 NON_CONSOLE_RE = re.compile(
@@ -32,14 +35,8 @@ def main() -> int:
         name = cells[0]
         if name.lower() in ("console", "item", "retailer / store", "---", "") or set(name) <= {"-"}:
             continue
-        # Only police rows that claim to be a console-adjacent product.
-        looks_console = bool(CONSOLE_RE.search(name)) and bool(HARDWARE_RE.search(name))
-        if bool(CONSOLE_RE.search(name)) and NON_CONSOLE_RE.search(name):
-            bad.append((ln, name))
-        elif CONSOLE_RE.search(name) and not looks_console:
-            # "Saros (PlayStation 5)" — a game that names a console
-            bad.append((ln, name))
-        elif NON_CONSOLE_RE.search(name) and not CONSOLE_RE.search(name):
+        # Police any row that names a console or a game/accessory.
+        if (CONSOLE_RE.search(name) or NON_CONSOLE_RE.search(name)) and not is_console(name):
             bad.append((ln, name))
     if bad:
         print("FAIL: non-console rows in console tables:")

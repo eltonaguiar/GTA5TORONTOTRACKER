@@ -32,9 +32,13 @@ CONSOLE_RE = re.compile(r"(xbox\s+series\s+[xs]\b|playstation\s*5\b|\bps5\b)", r
 # Hardware words: a game can say "PlayStation 5" too, so require a hardware token.
 HARDWARE_RE = re.compile(r"(console|series\s+[xs]|\bdigital\b|\bdisc\b|slim|\bpro\b|1\s?tb|2\s?tb|512\s?gb|825\s?g[bo]|1\s?to)", re.I)
 NON_CONSOLE_RE = re.compile(
-    r"(forza|nba\b|nhl\b|fifa|madden|spider-?man|\bgame\b|\bjeu\b|controller|manette|"
-    r"headset|casque|charging|\bdock\b|accessor|bundle|\blot\b|skin\b|\bcase\b|\bsteelbook\b)",
+    r"(forza|fortnite|minecraft|halo|hot\s*wheels|nba\b|nhl\b|fifa|madden|spider-?man|\bgame\b|\bjeu\b|"
+    r"manette|headset|casque|charging|\bdock\b|accessor|\blot\b|skin\b|\bcase\b|steelbook|"
+    r"gift\s*card|wall\s*mount|disc\s*drive|racing\s*wheel|gamepad|mytrix)",
     re.I)
+ACCESSORY_LEAD_RE = re.compile(
+    r"^\s*(controller|headset|disc\s*drive|wall\s*mount|mount|charging|case|skin|stand)\b", re.I)
+EXTRA_CTRL_RE = re.compile(r"(,\s*controller and|with extra controller|extra controller included)", re.I)
 
 def is_in_stock(status: str) -> bool:
     """Only ✅ rows are listed; out-of-stock/unknown are hidden from the page."""
@@ -44,8 +48,14 @@ def is_in_stock(status: str) -> bool:
 def is_console(name: str) -> bool:
     """True only for the console itself (not a game, accessory, or bundle)."""
     n = name or ""
+    low = n.lower()
+    # "controller" is only allowed as part of a console box ("Includes ... Controller").
+    if "controller" in low and "includes" not in low:
+        return False
     return (bool(CONSOLE_RE.search(n)) and bool(HARDWARE_RE.search(n))
-            and not bool(NON_CONSOLE_RE.search(n)))
+            and not bool(NON_CONSOLE_RE.search(n))
+            and not bool(ACCESSORY_LEAD_RE.search(n))
+            and not bool(EXTRA_CTRL_RE.search(n)))
 
 def now_est() -> str:
     return datetime.datetime.now(EST).strftime("%Y-%m-%d %H:%M EST")
@@ -60,7 +70,11 @@ def fetch(url: str, timeout: int = 40):
     }
     try:
         if _HAS_CFFI:
-            r = cffi_requests.get(url, impersonate="chrome", timeout=timeout, headers=headers)
+            # Do NOT override User-Agent here: curl_cffi's impersonation sets a
+            # matching UA/TLS pair, and a mismatched UA gets a challenge page
+            # (Walmart returned a 7 KB shell instead of 780 KB of Next.js data).
+            h = {"Accept-Language": headers["Accept-Language"]}
+            r = cffi_requests.get(url, impersonate="chrome", timeout=timeout, headers=h)
             return r.status_code, r.text
         req = urllib.request.Request(url, headers=headers)
         with urllib.request.urlopen(req, timeout=timeout) as resp:
@@ -179,6 +193,99 @@ def fetch_bestbuy():
     return out
 
 
+WALMART_SOURCES = [
+    "https://www.walmart.ca/en/browse/video-games/playstation-5/10012_6000201024440",
+    "https://www.walmart.ca/en/search?q=xbox%20series%20x%20console",
+    "https://www.walmart.ca/en/search?q=xbox%20series%20s%20console",
+    # first-party Series S boxes (user-supplied canonical URLs)
+    "https://www.walmart.ca/en/ip/Xbox-Series-S-All-Digital-Gaming-Console-1TB-SSD-Includes-Xbox-Wireless-Controller-120FPS-Robot-White/2PV36JTTT7PR",
+    "https://www.walmart.ca/en/ip/XBOX-Series-S-All-Digital-Gaming-Console-512GB-SSD-Includes-XBOX-Wireless-Controller-120FPS-Robot-White/7IY33NVWJOKP",
+]
+
+
+def _walmart_items(html: str):
+    """Extract item dicts from category/search Next.js data or a product page."""
+    m = re.search(r'<script id="__NEXT_DATA__"[^>]*>(.*?)</script>', html, re.S)
+    if not m:
+        return []
+    try:
+        data = json.loads(m.group(1))
+    except Exception:
+        return []
+    hits = []
+    def walk(o, depth=0):
+        if depth > 12:
+            return
+        if isinstance(o, dict):
+            if "itemStacks" in o and isinstance(o["itemStacks"], list):
+                for st in o["itemStacks"]:
+                    if isinstance(st, dict):
+                        for it in st.get("items", []) or []:
+                            if isinstance(it, dict):
+                                hits.append(it)
+            # single product page shape
+            if ("name" in o and ("price" in o or "priceInfo" in o)
+                    and ("availabilityStatusV2" in o or "canAddToCart" in o)):
+                hits.append(o)
+            for v in o.values():
+                walk(v, depth + 1)
+        elif isinstance(o, list):
+            for v in o[:5]:
+                walk(v, depth + 1)
+    walk(data)
+    return hits
+
+
+def fetch_walmart():
+    """Discover in-stock consoles from Walmart category/search Next.js data."""
+    out, seen = [], set()
+    for url in WALMART_SOURCES:
+        status, body = fetch(url)
+        if not (isinstance(status, int) and status == 200 and body):
+            print(f"[FAIL] walmart {url[-40:]}: {status}")
+            continue
+        if "__NEXT_DATA__" not in body or "Verify Your Identity" in body:
+            print(f"[CHALLENGE] walmart {url[-40:]}: bot identity check (no rows, no guesses)")
+            continue
+        n_kept = 0
+        for it in _walmart_items(body):
+            name = str(it.get("name") or "")
+            if not is_console(name):
+                continue
+            av = (it.get("availabilityStatusV2") or {})
+            in_stock = (str(av.get("value", "")).upper() == "IN_STOCK"
+                        and not it.get("isOutOfStock") and bool(it.get("canAddToCart")))
+            if not in_stock:
+                continue
+            link = it.get("canonicalUrl") or ""
+            if link and not link.startswith("http"):
+                link = "https://www.walmart.ca" + link
+            if link in seen:
+                continue
+            seen.add(link)
+            seller = it.get("sellerName") or it.get("catalogSellerId") or "Walmart"
+            where = ("Walmart Canada" if str(seller).lower() == "walmart"
+                     else f"Walmart Canada (marketplace: {seller})")
+            if "refurb" in name.lower():
+                where += " — refurbished"
+            price = it.get("price")
+            out.append({"name": name[:110],
+                        "price": f"${price:,.2f}" if isinstance(price, (int, float)) else "—",
+                        "status": "✅ InStock",
+                        "where": where, "link": link, "stamp": now_est()})
+            n_kept += 1
+        print(f"[OK] walmart {url[-38:]}: {n_kept} in-stock console(s)")
+        import time as _t; _t.sleep(1)
+    # prefer first-party, then cheapest; collapse duplicate titles
+    out.sort(key=lambda r: (0 if "marketplace" not in r["where"] else 1,
+                            float(str(r["price"]).replace("$", "").replace(",", "") or 9e9)))
+    dedup = {}
+    for r in out:
+        key = re.sub(r"\s+", " ", r["name"].lower())[:90]
+        dedup.setdefault(key, r)
+    return list(dedup.values())
+
+
 STAPLES_QUERIES = ["playstation 5", "xbox series x"]
 
 
@@ -286,7 +393,12 @@ def build_site_data(cc_rows, live_rows, stamp):
         if not (is_console(r["name"]) and is_in_stock(r["status"])):
             hidden += 1
             continue
-        retailer = "Best Buy" if "Best Buy" in r["where"] else "Staples"
+        if "Best Buy" in r["where"]:
+            retailer = "Best Buy"
+        elif "Walmart" in r["where"]:
+            retailer = "Walmart"
+        else:
+            retailer = "Staples"
         status = "in_stock" if r["status"].startswith("\u2705") else "sold_out"
         seller = ""
         if "(" in r["where"] and ")" in r["where"]:
@@ -314,15 +426,6 @@ def build_site_data(cc_rows, live_rows, stamp):
                      "status_text": r["status"].replace("\u2705 ", "").replace("\u26d4 ", "").replace("\u26a0\ufe0f ", ""),
                      "seller": "Canada Computers", "kind": "first-party",
                      "checked": r["stamp"], "url": r["link"], "method": "page-scrape", "owner": "auto"})
-
-    for name, price, seller, kind, url, note in WALMART_OBS:
-        if not is_console(name):
-            continue
-        rows.append({"retailer": "Walmart", "product": name, "price": price,
-                     "price_text": f"${price:,.2f}", "status": "in_stock",
-                     "status_text": "listed", "seller": seller, "kind": kind,
-                     "checked": "2026-11-24 09:00 EST", "url": url,
-                     "method": "headful-chrome", "owner": "hermes", "note": note})
 
     for retailer, product, owner, note in PLACEHOLDERS:
         rows.append({"retailer": retailer, "product": product, "price": None, "price_text": "-",
@@ -358,7 +461,7 @@ def build_readme(cc_rows, stamp, live_rows=None):
         a(f"_{len(shown_live)} in-stock listing(s) shown; **{hidden} out-of-stock listing(s) hidden** "
           f"(we only list consoles you can actually buy). Checked {stamp}._\n")
         a(f"_Fetched **{stamp}** from first-party JSON APIs: Best Buy `ecomm-api` and "
-          "Staples product-page JSON-LD (`schema.org/OutOfStock`). "
+          "Staples product-page JSON-LD and Walmart category/search `__NEXT_DATA__`. "
           "`sellerId: bbyca` = Best Buy's own stock, not a marketplace reseller._\n")
         a("| Console | Price | Status | Where | Link | Checked (EST) |")
         a("|---|---|---|---|---|---|")
@@ -407,7 +510,7 @@ def build_readme(cc_rows, stamp, live_rows=None):
     a("| Best Buy Canada | **NOW AUTO-VERIFIED** — see LIVE VERIFIED above | HTML is Akamai-walled, but the `ecomm-api` JSON endpoint answers 200 (verified 2026-11-24) | https://www.bestbuy.ca/en-ca/product/xbox-series-s-512gb-console/19422130 | auto |")
     a("| Best Buy Canada | PS5 Slim 1TB | `ecomm-api` reports online status directly | https://www.bestbuy.ca/en-ca/product/playstation-5-slim-1tb-console/19446111 | auto |")
     a("| EB Games / GameStop (267 Yonge St) | PS5 / Xbox store stock | Cloudflare; gamestop.ca does not resolve | https://www.ebgames.ca/ | 2026-11-20 16:00 |")
-    a("| Walmart Canada | Consoles — **marketplace resellers list PS5 at $1899+ (seller BuySmart) vs $1099.99 first-party elsewhere**. Do not buy without checking the seller field | plain HTTP + every known JSON API 403s; a headful real Chrome does load search results, but prices are mostly reseller markup | https://www.walmart.ca/en/search?q=playstation+5 | 2026-11-24 09:00 |")
+    a("| Walmart Canada | **NOW AUTO-VERIFIED** — see IN STOCK NOW above | category/search `__NEXT_DATA__` parsed with curl_cffi; seller field shown, marketplace rows labelled | https://www.walmart.ca/en/browse/video-games/playstation-5/10012_6000201024440 | auto |")
     a("| Staples | **NOW AUTO-VERIFIED** — see LIVE VERIFIED above | Shopify product-page JSON-LD `availability` (the `suggest.json` flag was stale and wrong) | https://www.staples.ca/search?query=playstation+5 | auto |")
     a("| Memory Express | Consoles | Cloudflare challenge | https://www.memoryexpress.com/ | 2026-11-20 16:00 |")
     a("| Gamerama (local) | Xbox/PS5 shelf stock | Phone verify | 2470 Yonge St — 416-487-8802 | 2026-11-20 16:00 |")
@@ -456,7 +559,7 @@ def main():
     # Live first-party JSON sources. Wrapped so a dead endpoint can never break the
     # Canada Computers path or block the commit.
     live_rows = []
-    for fn in (fetch_bestbuy, fetch_staples):
+    for fn in (fetch_bestbuy, fetch_staples, fetch_walmart):
         try:
             live_rows += fn()
         except Exception as e:
@@ -483,6 +586,7 @@ def main():
         carried = []
         for r in prev.get("rows", []):
             if (r.get("retailer") in have
+                    or r.get("retailer") in ("Best Buy", "Staples", "Walmart", "Canada Computers")
                     or r.get("status") in ("pending", "sold_out", "unknown")):
                 continue
             r = dict(r)

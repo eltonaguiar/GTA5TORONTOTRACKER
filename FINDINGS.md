@@ -153,3 +153,21 @@ after the scrape step, so a regression cannot be auto-committed.
 
 **Verified after fix:** `grep -ciE "forza|nba|nhl|fifa|madden" README.md` → **0**;
 guard → **OK**; 6 console rows kept from Staples, all ❌ OutOfStock.
+
+## 2026-11-24 — Walmart discovery (category + search + product URLs)
+`fetch_walmart()` now discovers consoles from Walmart's Next.js payloads:
+- PS5 category `browse/video-games/playstation-5/10012_6000201024440`
+- searches `xbox series x console` and `xbox series s console`
+- two first-party Series S product URLs (user-supplied)
+
+It reads `availabilityStatusV2.value == IN_STOCK`, `isOutOfStock == false` and
+`canAddToCart == true`, and only lists in-stock consoles. Bundles with games
+(Fortnite/Minecraft/Halo), accessories (controller-only, headset, disc drive,
+wall mount, racing wheel), and marketplace duplicates are excluded; marketplace
+sellers are labelled and sorted after first-party.
+
+**Challenge behaviour:** our IP was served "Verify Your Identity" for the
+category page and the two product URLs, while the search pages still returned
+parsed items. On a challenge the row set is empty and printed as `[CHALLENGE]`
+— the tracker never guesses stock. The parser was verified earlier on a real
+54-item payload; GitHub Actions runs from a different IP.
