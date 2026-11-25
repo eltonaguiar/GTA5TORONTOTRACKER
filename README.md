@@ -6,18 +6,17 @@ In-stock check for **Xbox Series X / S** and **PlayStation 5** for **downtown To
 - **Unverified** rows = retailer blocks automated browsers → a human must confirm (link/phone given).
 - All times **EST**. This file is auto-updated by `.github/workflows/stock-monitor.yml`.
 
-_Last auto-check (Canada Computers): **2026-11-25 11:07 EST**._
+_Last auto-check (Canada Computers): **2026-11-25 11:34 EST**._
 
 ## ✅ IN STOCK NOW — auto-checked this run
 
-_2 in-stock listing(s) shown; **12 out-of-stock listing(s) hidden** (we only list consoles you can actually buy). Checked 2026-11-25 11:07 EST._
+_1 in-stock listing(s) shown; **10 out-of-stock listing(s) hidden** (we only list consoles you can actually buy). Checked 2026-11-25 11:34 EST._
 
-_Fetched **2026-11-25 11:07 EST** from first-party JSON APIs: Best Buy `ecomm-api` and Staples product-page JSON-LD and Walmart category/search `__NEXT_DATA__`. `sellerId: bbyca` = Best Buy's own stock, not a marketplace reseller._
+_Fetched **2026-11-25 11:34 EST** from first-party JSON APIs: Best Buy `ecomm-api` and Staples product-page JSON-LD and Walmart category/search `__NEXT_DATA__`. `sellerId: bbyca` = Best Buy's own stock, not a marketplace reseller._
 
 | Console | Price | Status | Where | Link | Checked (EST) |
 |---|---|---|---|---|---|
-| Xbox Series S 512GB | — | ✅ InStock | Best Buy Canada (bbyca) | https://www.bestbuy.ca/en-ca/product/19422130 | 2026-11-25 11:07 EST |
-| Sony - PlayStation 5 (PS5) Disc Console Slim - White (Refurbished) | $1,899.00 | ✅ InStock | Walmart Canada (marketplace: BuySmart) — refurbished | https://www.walmart.ca/en/ip/Sony-PlayStation-5-PS5-Disc-Console-Slim-White-Refurbished/5Y925C8NIFHG?classType=REGULAR | 2026-11-25 11:07 EST |
+| Xbox Series S 512GB | — | ✅ InStock | Best Buy Canada (bbyca) | https://www.bestbuy.ca/en-ca/product/19422130 | 2026-11-25 11:34 EST |
 
 ## AVAILABLE NOW — user-reported, API-confirmed this run
 
