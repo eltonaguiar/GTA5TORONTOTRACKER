@@ -6,27 +6,25 @@ In-stock check for **Xbox Series X / S** and **PlayStation 5** for **downtown To
 - **Unverified** rows = retailer blocks automated browsers → a human must confirm (link/phone given).
 - All times **EST**. This file is auto-updated by `.github/workflows/stock-monitor.yml`.
 
-_Last auto-check (Canada Computers): **2026-11-27 13:33 EST**._
+_Last auto-check (Canada Computers): **2026-11-27 14:04 EST**._
 
 ## ✅ IN STOCK NOW — auto-checked this run
 
-_11 in-stock listing(s) shown; **16 out-of-stock listing(s) hidden** (we only list consoles you can actually buy). Checked 2026-11-27 13:33 EST._
+_9 in-stock listing(s) shown; **10 out-of-stock listing(s) hidden** (we only list consoles you can actually buy). Checked 2026-11-27 14:04 EST._
 
-_Fetched **2026-11-27 13:33 EST** from first-party JSON APIs: Best Buy `ecomm-api` and Staples product-page JSON-LD and Walmart category/search `__NEXT_DATA__`. `sellerId: bbyca` = Best Buy's own stock, not a marketplace reseller._
+_Fetched **2026-11-27 14:04 EST** from first-party JSON APIs: Best Buy `ecomm-api` and Staples product-page JSON-LD and Walmart category/search `__NEXT_DATA__`. `sellerId: bbyca` = Best Buy's own stock, not a marketplace reseller._
 
 | Console | Price | Status | Where | Link | Checked (EST) |
 |---|---|---|---|---|---|
-| Xbox Series S 512GB | — | ✅ InStock | Best Buy Canada (bbyca) | https://www.bestbuy.ca/en-ca/product/19422130 | 2026-11-27 13:33 EST |
-| XBOX Series S - All Digital Gaming Console - 512GB SSD - Includes XBOX Wireless Controller - 120FPS - Robot Wh | $599.96 | ✅ InStock | Walmart Canada | https://www.walmart.ca/en/ip/XBOX-Series-S-All-Digital-Gaming-Console-512GB-SSD-Includes-XBOX-Wireless-Controller-120FPS-Robot-White/7IY33NVWJOKP?classType=REGULAR&athbdg=L1800 | 2026-11-27 13:33 EST |
-| Microsoft Xbox Series S Console - 512GB (Renewed) - Windows/Mac | $845.32 | ✅ InStock | Walmart Canada (marketplace: Urban Inspirations SFP) | https://www.walmart.ca/en/ip/Microsoft-Xbox-Series-S-Console-512GB-Renewed-Windows-Mac/165DIPJEQ5Y9?classType=REGULAR | 2026-11-27 13:33 EST |
-| PlayStation 5 Slim Console + PlayStation 5 DualSense Wireless Controller Starlight Blue - Includes PS5 Console | $1,484.99 | ✅ InStock | Walmart Canada (marketplace: AlwaysTech) | https://www.walmart.ca/en/ip/PlayStation-5-Slim-Console-DualSense-Wireless-Controller-Starlight-Blue-Includes-PS5-16GB-RAM-1TB-SSD-Custom-Integrated-I-O-Up-120fps-120Hz/4ZM1MOQLDU9V?classType=REGULAR | 2026-11-27 13:33 EST |
-| Xbox Series X – 1TB Digital Edition (no disk) | $1,649.00 | ✅ InStock | Walmart Canada (marketplace: BuySmart) | https://www.walmart.ca/en/ip/Xbox-Series-X-1TB-Digital-Edition-no-disk/6000207132321?classType=REGULAR | 2026-11-27 13:33 EST |
-| Restored Xbox Series X All Digital 1TB Console Disc-Free Gaming, 4K UHD, HDR, Wi-Fi 6E, Ultra-Fast SSD (Robot  | $1,649.00 | ✅ InStock | Walmart Canada (marketplace: BuySmart) | https://www.walmart.ca/en/ip/Restored-Xbox-Series-X-All-Digital-1TB-Console-Disc-Free-Gaming-4K-UHD-HDR-Wi-Fi-6E-Ultra-Fast-SSD-Robot-White-Open-Box/4565V7ZCQD76?classType=REGULAR | 2026-11-27 13:33 EST |
-| Xbox Series X - 1TB SSD - Carbon Black (with Disk) | $1,679.96 | ✅ InStock | Walmart Canada (marketplace: AlwaysTech) | https://www.walmart.ca/en/ip/Xbox-Series-X-1TB-SSD-Carbon-Black-with-Disk/6000201786333?classType=REGULAR | 2026-11-27 13:33 EST |
-| XBOX Series X - Gaming Console - 1TB SSD - Includes XBOX Wireless Controller - 4K Gaming - 120FPS - Carbon Bla | $1,679.96 | ✅ InStock | Walmart Canada (marketplace: AlwaysTech) | https://www.walmart.ca/en/ip/XBOX-Series-X-Gaming-Console-1TB-SSD-Includes-XBOX-Wireless-Controller-4K-Gaming-120FPS-Carbon-Black/3LBO3CT61QZD?classType=REGULAR&athbdg=L1200 | 2026-11-27 13:33 EST |
-| Refurbished Microsoft EP2-43335 Xbox Series X 1TB Console | $1,749.00 | ✅ InStock | Walmart Canada (marketplace: BuySmart) — refurbished | https://www.walmart.ca/en/ip/Refurbished-Microsoft-EP2-43335-Xbox-Series-X-1TB-Console/38KJPZZZWQU0?classType=REGULAR | 2026-11-27 13:33 EST |
-| Sony - PlayStation 5 (PS5) Disc Console Slim - White (Refurbished) | $1,899.00 | ✅ InStock | Walmart Canada (marketplace: BuySmart) — refurbished | https://www.walmart.ca/en/ip/Sony-PlayStation-5-PS5-Disc-Console-Slim-White-Refurbished/5Y925C8NIFHG?classType=REGULAR | 2026-11-27 13:33 EST |
-| Xbox Series X Gaming Console - 1TB SSD Black Xbox Console | $2,199.00 | ✅ InStock | Walmart Canada (marketplace: BuySmart) | https://www.walmart.ca/en/ip/Xbox-Series-X-Gaming-Console-1TB-SSD-Black-Xbox-Console/56GYBOLMTEAG?classType=REGULAR | 2026-11-27 13:33 EST |
+| Xbox Series S 512GB | — | ✅ InStock | Best Buy Canada (bbyca) | https://www.bestbuy.ca/en-ca/product/19422130 | 2026-11-27 14:04 EST |
+| XBOX Series S - All Digital Gaming Console - 512GB SSD - Includes XBOX Wireless Controller - 120FPS - Robot Wh | $599.96 | ✅ InStock | Walmart Canada | https://www.walmart.ca/en/ip/XBOX-Series-S-All-Digital-Gaming-Console-512GB-SSD-Includes-XBOX-Wireless-Controller-120FPS-Robot-White/7IY33NVWJOKP?classType=REGULAR&athbdg=L1800 | 2026-11-27 14:04 EST |
+| Microsoft Xbox Series S Console - 512GB (Renewed) - Windows/Mac | $845.32 | ✅ InStock | Walmart Canada (marketplace: Urban Inspirations SFP) | https://www.walmart.ca/en/ip/Microsoft-Xbox-Series-S-Console-512GB-Renewed-Windows-Mac/165DIPJEQ5Y9?classType=REGULAR | 2026-11-27 14:04 EST |
+| Xbox Series X – 1TB Digital Edition (no disk) | $1,649.00 | ✅ InStock | Walmart Canada (marketplace: BuySmart) | https://www.walmart.ca/en/ip/Xbox-Series-X-1TB-Digital-Edition-no-disk/6000207132321?classType=REGULAR | 2026-11-27 14:04 EST |
+| Restored Xbox Series X All Digital 1TB Console Disc-Free Gaming, 4K UHD, HDR, Wi-Fi 6E, Ultra-Fast SSD (Robot  | $1,649.00 | ✅ InStock | Walmart Canada (marketplace: BuySmart) | https://www.walmart.ca/en/ip/Restored-Xbox-Series-X-All-Digital-1TB-Console-Disc-Free-Gaming-4K-UHD-HDR-Wi-Fi-6E-Ultra-Fast-SSD-Robot-White-Open-Box/4565V7ZCQD76?classType=REGULAR | 2026-11-27 14:04 EST |
+| Xbox Series X - 1TB SSD - Carbon Black (with Disk) | $1,679.96 | ✅ InStock | Walmart Canada (marketplace: AlwaysTech) | https://www.walmart.ca/en/ip/Xbox-Series-X-1TB-SSD-Carbon-Black-with-Disk/6000201786333?classType=REGULAR | 2026-11-27 14:04 EST |
+| XBOX Series X - Gaming Console - 1TB SSD - Includes XBOX Wireless Controller - 4K Gaming - 120FPS - Carbon Bla | $1,679.96 | ✅ InStock | Walmart Canada (marketplace: AlwaysTech) | https://www.walmart.ca/en/ip/XBOX-Series-X-Gaming-Console-1TB-SSD-Includes-XBOX-Wireless-Controller-4K-Gaming-120FPS-Carbon-Black/3LBO3CT61QZD?classType=REGULAR&athbdg=L1200 | 2026-11-27 14:04 EST |
+| Refurbished Microsoft EP2-43335 Xbox Series X 1TB Console | $1,749.00 | ✅ InStock | Walmart Canada (marketplace: BuySmart) — refurbished | https://www.walmart.ca/en/ip/Refurbished-Microsoft-EP2-43335-Xbox-Series-X-1TB-Console/38KJPZZZWQU0?classType=REGULAR | 2026-11-27 14:04 EST |
+| Xbox Series X Gaming Console - 1TB SSD Black Xbox Console | $2,199.00 | ✅ InStock | Walmart Canada (marketplace: BuySmart) | https://www.walmart.ca/en/ip/Xbox-Series-X-Gaming-Console-1TB-SSD-Black-Xbox-Console/56GYBOLMTEAG?classType=REGULAR | 2026-11-27 14:04 EST |
 
 ## AVAILABLE NOW — user-reported, API-confirmed this run
 
