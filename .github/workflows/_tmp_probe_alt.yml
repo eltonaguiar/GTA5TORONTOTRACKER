@@ -1,0 +1,120 @@
+name: _tmp probe alt
+on:
+  workflow_dispatch:
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: probe
+        env:
+          DB_HOST: mysql.50webs.com
+          DB_PORT: '3306'
+          DB_USER: ejaguiar1_stocks
+          DB_PASS: ${{ secrets.MYSQL_PASSWORD || secrets.AUDIT_DB_PASS }}
+        run: |
+          python3 -m pip install --quiet pymysql
+          python3 - <<'PY'
+          import os, statistics as st
+          import pymysql
+          cn = pymysql.connect(
+              host=os.environ['DB_HOST'],
+              port=3306,
+              user=os.environ['DB_USER'],
+              password=os.environ['DB_PASS'],
+              database='ejaguiar1_stocks',
+              connect_timeout=20
+          )
+          cur = cn.cursor()
+          # Strategy counts
+          cur.execute("SELECT strategy, COUNT(*) FROM trading_picks GROUP BY strategy")
+          strategy_counts = {row[0]: row[1] for row in cur.fetchall()}
+          
+          # Dedupe per (symbol, direction, DATE(created_at))
+          cur.execute("""
+              SELECT symbol, direction, DATE(created_at) as date
+              FROM trading_picks
+              WHERE created_at IS NOT NULL
+              GROUP BY symbol, direction, date
+          """)
+          deduped = cur.fetchall()
+          deduped_n = len(deduped)
+          
+          strategies = {}
+          for strategy, raw_count in strategy_counts.items():
+              if raw_count < 30:
+                  continue
+              
+              cur.execute(f"""
+                  SELECT symbol, direction, entry_price, take_profit, stop_loss, 
+                         confidence, category, source_system, status, pnl_pct, 
+                         exit_price, created_at, closed_at, exit_reason, 
+                         execution_slippage_pct
+                  FROM trading_picks
+                  WHERE strategy = '{strategy}'
+                  AND created_at IS NOT NULL
+              """, (strategy,))
+              rows = cur.fetchall()
+              
+              winning = [r for r in rows if r[9] in ['TP_HIT', 'TIME_EXIT', 'ACTIVE']]
+              win_rate_pct = len(winning) / len(rows) * 100 if rows else 0
+              
+              pnl_pcts = [r[9] for r in rows if r[9] is not None]
+              if len(pnl_pcts) >= 30:
+                  mean_pct = sum(pnl_pcts) / len(pnl_pcts)
+                  median_pct = sorted(pnl_pcts)[len(pnl_pcts)//2]
+                  sorted_pnl = sorted(pnl_pcts)
+                  n_top = int(len(sorted_pnl)*0.01)
+                  trimmed_mean_pct = sum(sorted_pnl[n_top:] - sorted_pnl[:n_top]) / (len(sorted_pnl) - 2*n_top) if len(sorted_pnl) > 2*n_top else 0
+              else:
+                mean_pct = median_pct = trimmed_mean_pct = 0
+              
+              dates = sorted(set(r[11] for r in rows))  # created_at dates
+              if len(dates) >= 2:
+                mid = len(dates) // 2
+                first_half_dates = dates[:mid]
+                second_half_dates = dates[mid:]
+                
+                first_half_pnl = [r[9] for r in rows if r[11] in first_half_dates and r[9] is not None]
+                second_half_pnl = [r[9] for r in rows if r[11] in second_half_dates and r[9] is not None]
+                
+                first_half_mean = sum(first_half_pnl) / len(first_half_pnl) if first_half_pnl else 0
+                second_half_mean = sum(second_half_pnl) / len(second_half_pnl) if second_half_pnl else 0
+              else:
+                first_half_mean = second_half_mean = 0
+              
+              symbol_counts = {}
+              for r in rows:
+                symbol = r[0]
+                symbol_counts[symbol] = symbol_counts.get(symbol, 0) + 1
+              top_symbol_count = max(symbol_counts.values()) if symbol_counts else 0
+              top_symbol_share_pct = (top_symbol_count / len(rows)) * 100 if rows else 0
+              
+              strategies[strategy] = {
+                'raw_n': raw_count,
+                'deduped_n': deduped_n,
+                'first_half_mean': first_half_mean,
+                'mean_pct': mean_pct,
+                'median_pct': median_pct,
+                'name': str(strategy),
+                'trimmed_mean_pct': trimmed_mean_pct,
+                'second_half_mean': second_half_mean,
+                'top_symbol_share_pct': top_symbol_share_pct,
+                'win_rate_pct': win_rate_pct,
+                'verdict': 'POSITIVE' if mean_pct > 0 and second_half_mean > 0 and deduped_n >= 30 else 'UNINFORMATIVE'
+              }
+          
+          print('STRATEGIES:')
+          for strategy, data in strategies.items():
+            print(f"  {strategy}:")
+            print(f"    raw_n: {data['raw_n']}")
+            print(f"    deduped_n: {data['deduped_n']}")
+            print(f"    first_half_mean: {data['first_half_mean']}")
+            print(f"    mean_pct: {data['mean_pct']}")
+            print(f"    median_pct: {data['median_pct']}")
+            print(f"    second_half_mean: {data['second_half_mean']}")
+            print(f"    top_symbol_share_pct: {data['top_symbol_share_pct']}")
+            print(f"    trimmed_mean_pct: {data['trimmed_mean_pct']}")
+            print(f"    win_rate_pct: {data['win_rate_pct']}")
+            print(f"    verdict: {data['verdict']}")
+          PY
